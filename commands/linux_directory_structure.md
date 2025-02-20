@@ -191,3 +191,42 @@ These files are **essential for starting the Linux system**.
 ls /boot          # View boot files
 journalctl -b | tail -20  # View boot logs
 ```
+
+---
+
+### **8 Device Management (`/dev`, `/proc`, `/sys`)**
+#### **What is Device Management in Linux?**
+Device management in Linux is crucial because **everything in Linux is treated as a file, including hardware devices**. The `/dev`, `/proc`, and `/sys` directories provide access to **hardware devices, kernel processes, and system parameters**.
+
+### **Why does this matter for Cloud?**
+- **Managing disk partitions (`/dev/sda`)** is essential when setting up cloud servers in **AWS, Azure, or GCP**.
+- **Kubernetes nodes** use `/proc` and `/sys` for system monitoring.
+- **Infrastructure as Code (Terraform, Ansible, etc.)** often interacts with devices in `/dev/` (e.g., configuring network interfaces, block storage, or system monitoring).
+
+### **Purpose of Device Management Directories**
+| **Directory** | **Purpose** | **Who Uses It?** | **Example Files** |
+|--------------|------------|------------------|--------------------|
+| `/dev` | Contains device files for hardware (disks, USBs, network interfaces) | System & root users | `/dev/sda` (disk), `/dev/tty` (terminal), `/dev/null` |
+| `/proc` | Virtual filesystem for kernel and processes | System processes & admins | `/proc/cpuinfo`, `/proc/meminfo`, `/proc/uptime` |
+| `/sys` | Virtual filesystem for hardware and system configuration | System & root users | `/sys/class/net/eth0/`, `/sys/block/sda/` |
+
+### **Try it yourself!** 🔥
+#### **1️⃣ Check Available Disks (Storage Devices)**
+```bash
+lsblk
+```
+This will **list all mounted and unmounted storage devices** in your system.
+
+#### **2️⃣ View CPU & Memory Information**
+```bash
+cat /proc/cpuinfo
+cat /proc/meminfo
+```
+These commands **retrieve system hardware details**, essential for **troubleshooting and monitoring**.
+
+#### **3️⃣ Check Active Network Interfaces**
+```bash
+ls /sys/class/net/
+```
+This will **list all available network interfaces**, useful for **configuring servers in cloud environments**.
+
