@@ -139,4 +139,4 @@ id john_cloud
 ✅ **Modify users** by adding them to groups or locking/unlocking accounts.  
 ✅ **Check user details** with `whoami`, `id`, and `/etc/passwd`.  
 
-🎯 **Next Step:** Now that we know how to manage users, let's move to **Groups in Linux!** 🚀![image](https://github.com/user-attachments/assets/633eff5d-8f14-49ab-8d0d-f6ceb875abd3)
+🎯 **Next Step:** Now that we know how to manage users, let's move to **Groups in Linux!**
