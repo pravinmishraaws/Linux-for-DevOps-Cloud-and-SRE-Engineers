@@ -1,6 +1,6 @@
-## **Understanding Linux File Types for DevOps Engineers**  
+## **Understanding Linux File Types for Cloud Engineers**  
 
-Linux supports **different types of files**, each with **a specific role** in system operations. As a **DevOps engineer**, knowing these file types helps in **system administration, troubleshooting, automation, and infrastructure management**.
+Linux supports **different types of files**, each with **a specific role** in system operations. As a **Cloud engineer**, knowing these file types helps in **system administration, troubleshooting, automation, and infrastructure management**.
 
 ---
 
@@ -16,7 +16,7 @@ Linux supports **different types of files**, each with **a specific role** in sy
 | `/var/log/syslog` | Logs system messages. |
 | `/home/user/script.sh` | Bash script for automation. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Writing automation scripts** (`.sh`, `.py`).  
 ✅ **Configuring servers** using `/etc/` config files.  
 ✅ **Analyzing logs** (`/var/log/syslog`) to troubleshoot system issues.  
@@ -41,7 +41,7 @@ ls -l /etc/passwd
 | `/var/log` | Stores system logs. |
 | `/etc/nginx/` | Configuration files for Nginx web server. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Managing logs and backups** (`/var/log/`).  
 ✅ **Configuring user access** (`/home/username/`).  
 ✅ **Organizing automation and scripts** under `/opt/` or `/usr/local/bin/`.  
@@ -66,7 +66,7 @@ ls -ld /home
 | `/usr/bin/python -> /usr/bin/python3.8` | Default Python version mapping. |
 | `/etc/nginx/sites-enabled/website.conf -> /etc/nginx/sites-available/website.conf` | Nginx config symlink for enabling websites. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Version management** (e.g., `python -> python3.8`).  
 ✅ **Simplifying configurations** (`nginx` sites-enabled structure).  
 ✅ **Linking files across different directories** without duplication.  
@@ -92,7 +92,7 @@ ls -l /var/www
 | `/dev/nvme0n1` | NVMe SSD storage device. |
 | `/dev/loop0` | Mounted disk image. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Managing disk partitions** and storage volumes (`fdisk`, `lsblk`).  
 ✅ **Creating and attaching storage for cloud servers** (e.g., **EBS volumes in AWS**).  
 ✅ **Working with containerized environments** (loopback devices for Docker).  
@@ -116,7 +116,7 @@ ls -l /dev/sda1
 | `/dev/null` | Discard any output written to it. |
 | `/dev/random` | Generates random numbers. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Redirecting logs or outputs** (`command > /dev/null`).  
 ✅ **Automating input/output operations** on remote servers.  
 ✅ **Generating secure random numbers** for cryptography.  
@@ -141,7 +141,7 @@ ls -l /dev/tty1
 | `/var/run/mysqld/mysqld.sock` | MySQL database communication. |
 | `/tmp/.X11-unix/X0` | X server graphical interface socket. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Managing Docker & Kubernetes containers** (`/var/run/docker.sock`).  
 ✅ **Database interactions** without network latency (`mysqld.sock`).  
 ✅ **Enabling inter-process communication** in CI/CD workflows.  
@@ -166,7 +166,7 @@ ls -l /var/run/docker.sock
 | `command1 | command2` | Standard Unix pipeline. |
 | `ls -l | grep txt` | Filters `.txt` files from `ls` output. |
 
-🛠 **Use Case in DevOps:**  
+🛠 **Use Case in Cloud:**  
 ✅ **Automation of workflows** (`grep`, `awk`, `sed`).  
 ✅ **Processing large logs and data streams** (`tail -f /var/log/syslog | grep error`).  
 ✅ **Building efficient CI/CD pipelines**.  
@@ -180,8 +180,8 @@ ls -l mypipe
 
 ---
 
-## **🛠 Final Summary for DevOps**
-| **File Type** | **Why It Matters for DevOps?** |
+## **🛠 Final Summary for Cloud**
+| **File Type** | **Why It Matters for Cloud?** |
 |--------------|--------------------------------|
 | **Regular Files** | Configuration files, automation scripts, log files. |
 | **Directories** | Organizing system files, application deployments. |
@@ -193,7 +193,7 @@ ls -l mypipe
 
 ---
 
-### **🚀 How This Helps DevOps Engineers?**
+### **🚀 How This Helps Cloud Engineers?**
 1. **Automating server management** (handling files, logs, and configurations).  
 2. **Managing infrastructure at scale** (cloud storage, networking, permissions).  
 3. **Troubleshooting faster** (log analysis, process management).  
