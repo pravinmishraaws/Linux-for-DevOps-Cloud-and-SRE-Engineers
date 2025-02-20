@@ -1,4 +1,4 @@
-# **Linux Directory Structure – A DevOps Engineer’s Guide**  
+# **Linux Directory Structure – A Cloud Engineer’s Guide**  
 *A practical approach to mastering Linux directories with real-world examples and hands-on exercises.*
 
 ---
@@ -9,7 +9,7 @@
 - It is similar to **C:\** in Windows, but in Linux, everything (files, directories, and mounted devices) is organized **under `/`**.  
 - This is where **all other directories and files branch from**, making it **the backbone of the Linux system**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - **Docker containers** and **Kubernetes nodes** have a minimal filesystem starting from `/`.
 - **Terraform**, when provisioning servers, often references paths like `/etc/` for configurations.
 - **Ansible playbooks** frequently manipulate files under `/var/` or `/etc/`.
@@ -26,7 +26,7 @@ This command **lists all major directories** inside `/` and gives a high-level o
 ### **What are System Binaries?**  
 System binaries are **essential programs that allow users and system administrators to interact with Linux**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - **Terraform, Ansible, Kubernetes binaries** are often stored in `/usr/bin/` or `/usr/local/bin/`.
 - **CI/CD tools like Jenkins and GitLab CI/CD** execute binaries from these locations.
 - Debugging a system? **Common commands like `ls`, `cp`, `rm`, `wget`, `systemctl`** live in these directories.
@@ -61,7 +61,7 @@ If installed, it should be in `/usr/local/bin/terraform`.
 ### **What are Configuration Files?**  
 These files **store system-wide settings for networking, users, applications, and security policies**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - **Nginx, Apache, MySQL, PostgreSQL configuration files** are stored in `/etc/`.
 - **Kubernetes kubeconfig file (`~/.kube/config`)** helps manage clusters.
 - **Ansible inventories** often reference configuration files in `/etc/ansible/`.
@@ -94,7 +94,7 @@ cat /etc/nginx/nginx.conf
 ### **What are Home & User Files?**  
 These directories store **personal data, user preferences, and shell configurations**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - When **managing multiple users in Linux**, home directories help in organizing their files.
 - CI/CD pipelines sometimes need access to user directories (e.g., **Jenkins home directory** `/var/lib/jenkins`).
 - **SSH keys (`~/.ssh/authorized_keys`)** are stored inside user home directories.
@@ -120,7 +120,7 @@ ls -la /root
 ### **What are System Logs?**  
 Logs track **system events, user activity, and application actions**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - If a **Docker container** crashes, check logs in `/var/log/`.
 - **CI/CD tools (Jenkins, GitLab CI/CD)** generate logs stored in `/var/log/jenkins.log`.
 - **Web servers (Nginx, Apache)** store access and error logs in `/var/log/apache2/`.
@@ -146,7 +146,7 @@ tail -f /var/log/auth.log    # Track user authentication logs
 ### **What are Temporary & Mount Points?**  
 These directories manage **temporary data and mounted external storage**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - `/tmp` is often used for **temporary caching during Ansible playbook execution**.
 - `/mnt` and `/media` help attach external storage (e.g., AWS EBS volumes).
 
@@ -173,7 +173,7 @@ ls -l /tmp
 ### **What are Boot Files?**  
 These files are **essential for starting the Linux system**.
 
-### **Why does this matter for DevOps?**  
+### **Why does this matter for Cloud?**  
 - If a **Linux server fails to boot**, checking `/boot/` can help diagnose issues.
 - **Cloud VM images** rely on `/boot/vmlinuz` for kernel loading.
 
