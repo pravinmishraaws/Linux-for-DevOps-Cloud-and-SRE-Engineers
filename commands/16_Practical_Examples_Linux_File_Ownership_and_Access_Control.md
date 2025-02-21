@@ -229,13 +229,13 @@ ls -l /var/www/deploy.sh
 
 ✅ **Example Output:**
 ```
--rwxr-x--- 1 root root 44 Feb 21 05:31 /var/www/deploy.sh
+---xr-x--- 1 root root 44 Feb 21 05:31 /var/www/deploy.sh
 ```
 
 ### **Breaking Down the Current Permissions**
 | **User Type** | **Current Permission** | **Meaning** |
 |--------------|-----------------|------------------------------|
-| **Owner (`root`)** | `rwx` | Full access (read, write, execute) |
+| **Owner (`root`)** | `--x` | execute |
 | **Group (`root`)** | `r-x` | Read & execute only |
 | **Others** | `---` | No access |
 
@@ -256,9 +256,9 @@ To **set precise access**, we sum the values:
 
 | **User**  | **Required Permission** | **Value Calculation** | **Numeric Value** |
 |-----------|------------------------|---------------------|---------------|
-| **Owner** | `rwx` (read, write, execute) | `4+2+1` | **7** |
+| **Owner** | `rwx` (execute) | `0+0+1` | **1** |
 | **Group** | `r-x` (read, execute) | `4+0+1` | **5** |
-| **Others** | `r--` (read-only) | `4+0+0` | **4** |
+| **Others** | `---` (read-only) | `0+0+0` | **4** |
 
 Thus, to set **Owner: Full Access**, **Group: Read & Execute**, **Others: Read-Only**, we use:
 
