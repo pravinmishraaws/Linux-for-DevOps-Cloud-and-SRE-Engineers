@@ -40,7 +40,7 @@ sudo usermod -aG devops devopsuser
 sudo mkdir -p /var/www
 sudo touch /var/www/deploy.sh
 echo -e '#!/bin/bash\necho "Deploying application..."' | sudo tee /var/www/deploy.sh > /dev/null
-sudo chmod +x /var/www/deploy.sh
+sudo chmod 000 /var/www/deploy.sh
 sudo chown root:root /var/www/deploy.sh
 ```
 
