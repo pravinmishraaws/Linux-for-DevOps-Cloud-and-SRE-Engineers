@@ -98,7 +98,10 @@ cat /etc/group
 ```
 📌 Shows **all groups** on the system.  
 
-✅ **Example Use Case**  
+✅ **Example Use Case** 
+
+**Note:** We don't have yet nginx running and user. But just for your information. 
+ 
 **Scenario:** You want to check if `nginx` is running as the correct user.  
 ```bash
 groups nginx
