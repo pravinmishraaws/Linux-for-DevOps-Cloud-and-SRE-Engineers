@@ -78,6 +78,68 @@ ls -l /var/www
 ```
 - If the first character is `l`, it is a **symbolic link**.
 
+## 📌 **Practical Example**
+Let's demonstrate symbolic links using a real-world scenario:
+
+### **Example 1: Linking a Config File**
+👉 You have a config file stored in your home directory, but an application expects it in `/etc/myapp/config.json`.
+
+#### **Steps:**
+1️⃣ Create a sample config file:
+   ```sh
+   echo '{"setting": "value"}' > ~/config.json
+   ```
+
+2️⃣ Create a symbolic link in `/etc/myapp/` (assume the directory exists):
+   ```sh
+   sudo ln -s ~/config.json /etc/myapp/config.json
+   ```
+
+3️⃣ Verify the symlink:
+   ```sh
+   ls -l /etc/myapp/config.json
+   ```
+
+   ✅ Output:
+   ```
+   lrwxr-xr-x  1 user  staff  23 Feb 21 10:00 /etc/myapp/config.json -> /Users/user/config.json
+   ```
+   This means `/etc/myapp/config.json` points to the actual file in `~/config.json`.
+
+---
+
+### **Example 2: Managing Multiple Versions of a Binary**
+Imagine you have multiple versions of Node.js installed (via `nvm` or manually), and you want to set a default:
+
+#### **Steps:**
+1️⃣ Assume Node.js 18 and 20 are installed:
+   ```sh
+   ls /usr/local/bin/node*
+   ```
+
+   ```
+   /usr/local/bin/node18
+   /usr/local/bin/node20
+   ```
+
+2️⃣ Create a symbolic link to set the default version:
+   ```sh
+   sudo ln -s /usr/local/bin/node20 /usr/local/bin/node
+   ```
+
+3️⃣ Verify:
+   ```sh
+   ls -l /usr/local/bin/node
+   ```
+
+   ✅ Output:
+   ```
+   lrwxr-xr-x  1 root  wheel  20 Feb 21 10:10 /usr/local/bin/node -> /usr/local/bin/node20
+   ```
+
+   🔹 Now, when you type `node`, it runs version 20.
+
+
 ---
 
 ### **4️⃣ Block Devices (`b`)**
