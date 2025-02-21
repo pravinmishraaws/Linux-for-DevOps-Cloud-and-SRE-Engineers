@@ -159,30 +159,6 @@ Imagine you have multiple versions of Node.js installed (via `nvm` or manually),
 ✅ **Creating and attaching storage for cloud servers** (e.g., **EBS volumes in AWS**).  
 ✅ **Working with containerized environments** (loopback devices for Docker).  
 
-Here's your updated documentation with a clear and structured explanation, ensuring students understand the concept of **block devices** in the context of an **Azure VM**, including the presence of a **temporary disk**.
-
----
-
-## **🔹 Block Devices (b)**
-### **💡 What is it?**
-Block devices represent **physical storage devices** like hard drives, SSDs, and USB drives. These devices allow **structured read/write operations** and are used for data storage, partitioning, and file systems.
-
----
-
-### **📌 Examples of Block Devices**
-| Block Device    | Purpose |
-|----------------|---------|
-| `/dev/sda1`    | First partition of the primary hard drive (OS disk). |
-| `/dev/nvme0n1` | NVMe SSD storage device (used in high-performance VMs). |
-| `/dev/loop0`   | Mounted disk image (commonly used for containers or ISO files). |
-
----
-
-### **🛠 Use Cases in Cloud Environments**
-✅ **Managing storage volumes and partitions** (e.g., `fdisk`, `lsblk`).  
-✅ **Creating and attaching cloud storage** (e.g., Azure Managed Disks, AWS EBS Volumes).  
-✅ **Handling loopback devices for containers** (e.g., Docker storage layers).  
-
 ## ** How to Check Block Devices?**
 To list all available block devices on a Linux system, use:
 ```sh
