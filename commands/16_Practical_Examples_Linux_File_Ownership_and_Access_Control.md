@@ -104,11 +104,19 @@ Now, **devopsuser** owns the script, and **devops group members** can access it.
 ---
 
 # **Scenario 3: Changing File Permissions**
-### **Why is this important?**
 
-## **Understanding File Permissions and Adjusting Them for Secure Execution**
+## **Why is This Important?**
+**Understanding File Permissions and Adjusting Them for Secure Execution** is essential for DevOps engineers.  
+Before executing a deployment script, a DevOps engineer must ensure the **correct permissions** are in place:
 
-### **Current File Permissions:**
+✔️ The **owner** should be able to **execute** the script.  
+✔️ **Group members** should have **limited access**.  
+✔️ **Others should have NO access** for security reasons.
+
+---
+
+## **Current File Permissions**
+Run the following command to check permissions:
 ```bash
 ls -l /var/www/deploy.sh
 ```
@@ -118,31 +126,25 @@ ls -l /var/www/deploy.sh
 ```
 
 ### **Breaking Down the Current Permissions**
-| Position | Meaning | Current Value (`----------`) |
-|----------|---------|----------------------|
+| **Position** | **Meaning** | **Current Value (`----------`)** |
+|-------------|------------|--------------------------------|
 | **1st**  | File Type | `-` (regular file) |
 | **2nd-4th** | Owner’s Permissions | `---` (no read, write, or execute) |
 | **5th-7th** | Group Permissions | `---` (no read, write, or execute) |
 | **8th-10th** | Others’ Permissions | `---` (no read, write, or execute) |
 
-🚨 **Problem:**  
-- **The owner, group, and others have NO permissions at all!**  
+### **🚨 Problem:**
+- The **owner, group, and others have NO permissions at all**.  
 - The script **cannot be read, modified, or executed** by anyone.
 
----
-
-## **Why is This Important for DevOps Engineers?**
-Before executing a deployment script, a **DevOps engineer must ensure the correct permissions** are in place:  
-✔️ **The owner should be able to execute the script.**  
-✔️ **Group members should have limited access.**  
-✔️ **Others should have NO access for security reasons.**
-
 ## **1️⃣ Switch to Root User (Required)**
-Since the file is owned by `root`, **only root can modify permissions**. Switch to the root user:
+Since the file is **owned by `root`**, only **root can modify permissions**.
+
+Run the following command:
 ```bash
 sudo su -
 ```
-Now, confirm you are the root user:
+Now, confirm you are the **root user**:
 ```bash
 whoami
 ```
@@ -153,38 +155,36 @@ root
 
 ## **2️⃣ Adjusting File Permissions**
 
-#### **1️⃣ Grant Execute Permission to the Owner**
+### **1️⃣ Grant Execute Permission to the Owner**
 ```bash
 chmod u+x /var/www/deploy.sh
 ```
+✅ **Now, the owner (`root`) can execute the script.**
 
-### **Check Permission**
+#### **Check Permission**
 ```bash
 ls -l /var/www/deploy.sh
 ```
 
-📌 **Now, the owner (`root`) can execute the script.**
 
-#### **2️⃣ Grant Read and Execute Permission to the Group**
-Since the group currently has **no permissions (`---`)**, we first need to allow **read (`r`) and execute (`x`)** access:
+### **2️⃣ Grant Read and Execute Permission to the Group**
+Since the **group currently has no permissions (`---`)**, we need to allow **read (`r`) and execute (`x`)** access:
 ```bash
 chmod g+rx /var/www/deploy.sh
 ```
-### **Check Permission**
+✅ **Now, group members can read and execute the script.**
+
+#### **Check Permission**
 ```bash
 ls -l /var/www/deploy.sh
 ```
 
-📌 **Now, group members can read and execute the script.**
-
-#### **3️⃣ Ensure Others Have No Permissions**
-Since **others (`o`) already have no permissions**, we don't need to run `chmod o-r`, but if we want to explicitly ensure no access, we can run:
+### **3️⃣ Ensure Others Have No Permissions**
+Since **others (`o`) already have no permissions (`---`)**, this is optional. However, to explicitly **restrict all access** for others, run:
 ```bash
 chmod o-rwx /var/www/deploy.sh
 ```
-📌 **This ensures others have no read, write, or execute permissions.**
-
----
+✅ **This ensures others have no read, write, or execute permissions.**
 
 ### **✅ Final Permission Check**
 ```bash
