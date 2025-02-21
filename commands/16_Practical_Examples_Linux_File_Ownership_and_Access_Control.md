@@ -59,13 +59,9 @@ ls -l /var/www/deploy.sh
 ### **Why is this important?**
 Before executing `deploy.sh`, the DevOps team must verify **who has access**.
 
-### **Check File Permissions**
-```bash
-ls -l /var/www/deploy.sh
+📌 **Example: yes, this is example to understand:**
 ```
-📌 **Example Output:**
-```
--rwxr-xr--  1 devopsuser devops  1024 Feb 20 10:00 deploy.sh
+-rwxr-xr--  1 xxuser xxgroup  1024 Feb 20 10:00 deploy.sh
 ```
 
 ### **Understanding File Permission Structure**
