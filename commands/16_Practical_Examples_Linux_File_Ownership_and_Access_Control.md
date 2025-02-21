@@ -215,8 +215,6 @@ ls -l /var/www/deploy.sh
 
 # **Scenario 4: Setting Permissions Using Numeric Mode**
 
-# **Setting Permissions Using Numeric Mode**
-
 ## **Why is This Important?**
 Numeric mode provides **precise control** over file permissions, making it easier to manage access in a structured way. Unlike symbolic mode (`chmod u+x`), numeric mode assigns **specific permission values** to the owner, group, and others in a single command.
 
