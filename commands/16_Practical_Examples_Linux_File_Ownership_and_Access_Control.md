@@ -107,6 +107,12 @@ Now, **devopsuser** owns the script, and **devops group members** can access it.
 ### **Why is this important?**
 To ensure **security and proper execution**, a DevOps engineer needs to adjust file permissions.
 
+**Note:** To change the persion, you need to be a root user so, using below command to become root user. 
+
+```bash
+sudo su - 
+```
+
 ### **Grant Execute Permission to the Owner**
 ```bash
 chmod u+x /var/www/deploy.sh
