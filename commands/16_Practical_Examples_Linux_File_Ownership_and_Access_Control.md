@@ -152,25 +152,30 @@ root
 ```
 
 ## **2️⃣ Adjusting File Permissions**
-### **🔹 Grant Execute Permission to the Owner**
+
+#### **1️⃣ Grant Execute Permission to the Owner**
 ```bash
 chmod u+x /var/www/deploy.sh
 ```
 📌 **Now, the owner (`root`) can execute the script.**
 
-### **🔹 Remove Write Permission from the Group**
+#### **2️⃣ Grant Read and Execute Permission to the Group**
+Since the group currently has **no permissions (`---`)**, we first need to allow **read (`r`) and execute (`x`)** access:
 ```bash
-chmod g-w /var/www/deploy.sh
+chmod g+rx /var/www/deploy.sh
 ```
-📌 **The group can read but not modify the file.**
+📌 **Now, group members can read and execute the script.**
 
-### **🔹 Remove Read Permission for Others**
+#### **3️⃣ Ensure Others Have No Permissions**
+Since **others (`o`) already have no permissions**, we don't need to run `chmod o-r`, but if we want to explicitly ensure no access, we can run:
 ```bash
-chmod o-r /var/www/deploy.sh
+chmod o-rwx /var/www/deploy.sh
 ```
-📌 **Others cannot view the script, enhancing security.**
+📌 **This ensures others have no read, write, or execute permissions.**
 
-## **3️⃣ Verify Updated Permissions**
+---
+
+### **✅ Final Permission Check**
 ```bash
 ls -l /var/www/deploy.sh
 ```
@@ -179,7 +184,7 @@ ls -l /var/www/deploy.sh
 -rwxr-x---  1 root root  44 Feb 21 05:31 /var/www/deploy.sh
 ```
 
-### **Breaking Down the Updated Permissions**
+### ** Breakdown of Updated Permissions**
 | Position | Meaning | Updated Value (`-rwxr-x---`) |
 |----------|---------|----------------------|
 | **1st**  | File Type | `-` (regular file) |
@@ -187,10 +192,13 @@ ls -l /var/www/deploy.sh
 | **5th-7th** | Group (`root`) | `r-x` (read & execute) |
 | **8th-10th** | Others | `---` (no access) |
 
-✅ **Final Permissions:**
-✔ **Root can execute, modify, and read the script.**  
-✔ **Group members can read & execute but not modify.**  
-✔ **Others have NO access for security.**
+---
+
+### **🚀 Final Takeaways**
+✔ **The owner (`root`) can execute, modify, and read the script.**  
+✔ **Group members can read & execute the script but cannot modify it.**  
+✔ **Others have no access for security.**  
+
 
 
 ---
