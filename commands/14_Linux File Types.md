@@ -159,7 +159,10 @@ Imagine you have multiple versions of Node.js installed (via `nvm` or manually),
 ✅ **Creating and attaching storage for cloud servers** (e.g., **EBS volumes in AWS**).  
 ✅ **Working with containerized environments** (loopback devices for Docker).  
 
-## ** How to Check Block Devices?**
+## **How to Check Block Devices?**
+
+**Note:** To test this, please ssh to your Azure or AWS Virtual Machine and follow the below commands. 
+
 To list all available block devices on a Linux system, use:
 ```sh
 lsblk
