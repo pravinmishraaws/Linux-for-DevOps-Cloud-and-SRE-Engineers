@@ -252,17 +252,14 @@ Each permission (read, write, execute) has a numeric value:
 
 To **set precise access**, we sum the values:
 
-| **User**  | **Required Permission** | **Value Calculation** | **Numeric Value** |
-|-----------|------------------------|---------------------|---------------|
-| **Owner** | `rwx` (execute) | `0+0+1` | **1** |
-| **Group** | `r-x` (read, execute) | `4+0+1` | **5** |
-| **Others** | `---` (read-only) | `0+0+0` | **4** |
-
 Thus, to set **Owner: Full Access**, **Group: Read & Execute**, **Others: Read-Only**, we use:
 
-```bash
-chmod 754 /var/www/deploy.sh
-```
+| **User**  | **Required Permission** | **Value Calculation** | **Numeric Value** |
+|-----------|------------------------|---------------------|---------------|
+| **Owner** | `rwx` (execute) | `4+2+1` | **7** |
+| **Group** | `r-x` (read, execute) | `4+0+1` | **5** |
+| **Others** | `---` (read-only) | `4+0+0` | **4** |
+
 
 ## **2️⃣ Applying Numeric Permissions**
 ### **Run the following command:**
