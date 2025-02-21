@@ -318,27 +318,101 @@ dd if=/dev/zero of=/dev/sdb bs=1M
 ---
 
 ### **6️⃣ Sockets (`s`)**
-💡 **What is it?**  
-- Used for **inter-process communication (IPC)**.  
-- Essential for **network services and application communication**.  
 
-📌 **Examples:**  
-| Socket File | Purpose |
-|------------|---------|
-| `/var/run/docker.sock` | Docker client-server communication. |
-| `/var/run/mysqld/mysqld.sock` | MySQL database communication. |
-| `/tmp/.X11-unix/X0` | X server graphical interface socket. |
+### **💡 What is it?**
+A **socket** is a special file used for **inter-process communication (IPC)**. It allows **processes to exchange data** efficiently without needing a network connection.
 
-🛠 **Use Case in Cloud:**  
+---
+
+### **📌 Examples of Socket Files**
+| **Socket File**                 | **Purpose**                                      |
+|----------------------------------|--------------------------------------------------|
+| `/var/run/docker.sock`           | Enables Docker CLI to communicate with the Docker daemon. |
+| `/var/run/mysqld/mysqld.sock`    | MySQL database socket for faster local queries. |
+| `/tmp/.X11-unix/X0`              | Socket for GUI applications in Linux. |
+
+---
+
+### **🛠 Use Cases in DevOps & Cloud**
 ✅ **Managing Docker & Kubernetes containers** (`/var/run/docker.sock`).  
-✅ **Database interactions** without network latency (`mysqld.sock`).  
+✅ **Interacting with databases** without network latency (`mysqld.sock`).  
 ✅ **Enabling inter-process communication** in CI/CD workflows.  
 
-🔍 **Check Sockets:**
-```bash
+---
+
+## **🔍 How to Check Sockets on an Azure VM?**
+To list a specific socket file:
+```sh
 ls -l /var/run/docker.sock
 ```
-- If the first character is `s`, it is a **socket file**.
+✅ **Example Output:**
+```
+srw-rw---- 1 root docker 0 Feb 21 10:30 /var/run/docker.sock
+```
+
+### **🔹 Understanding the Output**
+- The **first character** (`s`) means it is a **socket file**.
+- `docker.sock` allows the **Docker CLI to communicate with the Docker daemon**.
+
+---
+
+## **🔹 DevOps Use Cases for Sockets**
+
+### **1️⃣ Managing Docker Containers with `/var/run/docker.sock`**
+The **Docker socket (`/var/run/docker.sock`)** allows the **Docker CLI** to interact with the **Docker daemon** without needing an external API.
+
+🔹 **Example: Run a Container Using the Docker Socket**
+```sh
+docker run -v /var/run/docker.sock:/var/run/docker.sock -it alpine sh
+```
+✅ This lets a **container communicate with the host’s Docker daemon**.
+
+🔹 **Example: Check Running Containers via the Docker Socket**
+```sh
+curl --unix-socket /var/run/docker.sock http://localhost/containers/json
+```
+✅ This sends an **HTTP request to the Docker daemon via the socket**.
+
+⚠️ **Security Warning:**  
+Using the Docker socket inside a container can be dangerous, as it **grants root access** to the host system.
+
+---
+
+### **2️⃣ Connecting to MySQL Locally Using `/var/run/mysqld/mysqld.sock`**
+Instead of using **TCP connections**, MySQL uses a **Unix socket** for local communication, which is **faster and more secure**.
+
+🔹 **Example: Connect to MySQL Using the Socket**
+```sh
+mysql --socket=/var/run/mysqld/mysqld.sock -u root -p
+```
+✅ This **avoids network overhead** when connecting to a local database.
+
+🔹 **Example: Verify MySQL Socket File**
+```sh
+ls -l /var/run/mysqld/mysqld.sock
+```
+✅ Output:
+```
+srw-rw---- 1 mysql mysql 0 Feb 21 10:30 /var/run/mysqld/mysqld.sock
+```
+🔹 **If the socket file is missing,** MySQL may not be running.
+
+---
+
+### **3️⃣ Using Sockets for Secure Inter-Process Communication**
+🔹 **Example: Monitor All Active Sockets**
+```sh
+ss -lx
+```
+✅ Output:
+```
+Netid  State   Recv-Q  Send-Q  Local Address:Port  Peer Address:Port  
+unix   STREAM  0       0       /var/run/docker.sock   
+unix   STREAM  0       0       /var/run/mysqld/mysqld.sock
+unix   STREAM  0       0       /tmp/.X11-unix/X0
+```
+🔹 This lists **all Unix domain sockets** used by running applications.
+
 
 ---
 
