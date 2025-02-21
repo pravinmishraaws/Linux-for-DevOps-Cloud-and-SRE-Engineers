@@ -32,10 +32,10 @@ cat /etc/passwd | grep clouduser
 ✅ **Example Use Case**  
 **Scenario:** You want to **add a new Cloud engineer to the team** and give them access to the server.  
 ```bash
-sudo useradd john_cloud
-sudo passwd john_cloud
+sudo useradd devuser
+sudo passwd devuser
 ```
-📌 Now, `john_cloud` can log in with their password.  
+📌 Now, `devuser` can log in with their password.  
 
 ---
 
@@ -47,55 +47,49 @@ sudo passwd john_cloud
 
 ✅ **Command to Delete a User**  
 ```bash
-sudo userdel clouduser
+sudo userdel devuser
 ```
 📌 This **removes the user but keeps their home directory and files**.  
 
 ✅ **Delete a User and Their Home Directory**  
 ```bash
-sudo userdel -r clouduser
+sudo userdel -r devuser
 ```
 📌 The `-r` flag **removes the user’s home directory and files**.  
 
 ✅ **Example Use Case**  
 **Scenario:** A Cloud engineer resigns, and you need to remove their access:  
 ```bash
-sudo userdel -r john_cloud
+sudo userdel -r devuser
 ```
-📌 Now, `john_cloud` **cannot access the system** anymore.  
+📌 Now, `devuser` **cannot access the system** anymore.  
 
 ---
 
 ## **3. Modifying a User**  
 
 🔹 **Why Modify Users?**  
-- To **change user privileges**, group memberships, or account settings.  
+- To **change user privileges** or account settings.  
 - To **lock or unlock** user accounts temporarily.  
-
-✅ **Add a User to a Group**  
-```bash
-sudo usermod -aG docker clouduser
-```
-📌 Adds `clouduser` to the `docker` group.  
 
 ✅ **Lock a User Account**  
 ```bash
-sudo usermod -L clouduser
+sudo usermod -L devuser
 ```
-📌 Prevents `clouduser` from logging in.  
+📌 Prevents `devuser` from logging in.  
 
 ✅ **Unlock a User Account**  
 ```bash
-sudo usermod -U clouduser
+sudo usermod -U devuser
 ```
-📌 Allows `clouduser` to log in again.  
+📌 Allows `devuser` to log in again.  
 
 ✅ **Example Use Case**  
-**Scenario:** A Cloud engineer needs to **run Docker containers**. Add them to the `docker` group:  
+**Scenario:** You need to temporarily **disable an inactive user account**:  
 ```bash
-sudo usermod -aG docker john_cloud
+sudo usermod -L devuser
 ```
-📌 Now, `john_cloud` can run Docker commands **without sudo**.  
+📌 Now, `devuser` **cannot log in** until unlocked.  
 
 ---
 
@@ -103,7 +97,7 @@ sudo usermod -aG docker john_cloud
 
 🔹 **Why Check User Details?**  
 - To confirm **which user is currently logged in**.  
-- To **view user permissions and groups**.  
+- To **view user permissions**.  
 
 ✅ **Check the Current Logged-in User**  
 ```bash
@@ -113,7 +107,7 @@ whoami
 
 ✅ **View User ID (UID) and Group ID (GID)**  
 ```bash
-id clouduser
+id devuser
 ```
 📌 Displays **UID, GID, and group memberships**.  
 
@@ -124,11 +118,11 @@ cat /etc/passwd
 📌 Shows all **user accounts** on the system.  
 
 ✅ **Example Use Case**  
-**Scenario:** You need to **check if a user is part of a group** before granting permissions:  
+**Scenario:** You need to **check user details** before modifying account settings:  
 ```bash
-id john_cloud
+id devuser
 ```
-📌 This verifies **if `john_cloud` belongs to the `docker` group**.  
+📌 This verifies **the user’s UID, GID, and groups**.  
 
 ---
 
@@ -136,7 +130,8 @@ id john_cloud
 
 ✅ **Create a user** with `useradd` and **set a password** with `passwd`.  
 ✅ **Delete users** securely with `userdel -r`.  
-✅ **Modify users** by adding them to groups or locking/unlocking accounts.  
+✅ **Modify users** by locking/unlocking accounts.  
 ✅ **Check user details** with `whoami`, `id`, and `/etc/passwd`.  
 
-🎯 **Next Step:** Now that we know how to manage users, let's move to **Groups in Linux!**
+🎯 **Next Step:** Now that we know how to manage users, let's explore more Linux administration tasks!
+
