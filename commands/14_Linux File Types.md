@@ -438,28 +438,106 @@ unix   STREAM  0       0       /tmp/.X11-unix/X0
 ---
 
 ### **7️⃣ Pipes (`p`)**
-💡 **What is it?**  
-- Special file used to **pass data between processes**.  
-- Allows one process’s output to be **used as input** for another.  
 
-📌 **Examples:**  
-| Pipe File | Purpose |
-|----------|---------|
-| `/tmp/mypipe` | Custom named pipe for passing data. |
-| `command1 | command2` | Standard Unix pipeline. |
-| `ls -l | grep txt` | Filters `.txt` files from `ls` output. |
+### **💡 What is it?**  
+A **pipe** is a special file used for **passing data between processes**. It allows one process’s **output** to be used as **input** for another process, enabling efficient data processing and automation.
 
-🛠 **Use Case in Cloud:**  
-✅ **Automation of workflows** (`grep`, `awk`, `sed`).  
-✅ **Processing large logs and data streams** (`tail -f /var/log/syslog | grep error`).  
-✅ **Building efficient CI/CD pipelines**.  
+---
 
-🔍 **Create a Pipe:**
-```bash
-mkfifo mypipe
-ls -l mypipe
+## **🛠 Step 1: Simple Example Using Two Terminals**  
+Before diving into cloud use cases, let's understand **pipes with a basic example**.
+
+---
+
+### **📌 Scenario: Passing Data Between Two Terminals**
+We will create a **named pipe** to send messages between two processes.
+
+### **1️⃣ Open Two Terminals on Your Azure VM**
+
+#### **🖥 Terminal 1 (Create the Pipe and Listen)**
+Run:
+```sh
+mkfifo /tmp/mypipe
+cat /tmp/mypipe
 ```
-- If the first character is `p`, it is a **pipe**.
+✅ This **creates a named pipe** (`/tmp/mypipe`) and waits for input.
+
+#### **🖥 Terminal 2 (Send Data to the Pipe)**
+Run:
+```sh
+echo "Hello from Terminal 2" > /tmp/mypipe
+```
+✅ The message **instantly appears in Terminal 1**.
+
+🔹 **Congratulations! You just used a named pipe for inter-process communication.** 🎉
+
+---
+
+### **📌 Step 2: Check If the Pipe File Exists**
+While the pipe is active, open another terminal and check:
+```sh
+ls -l /tmp/mypipe
+```
+✅ Expected Output:
+```
+prw-r--r-- 1 user user 0 Feb 21 10:30 /tmp/mypipe
+```
+- The **first character** (`p`) means this is a **pipe file**.
+- **Unlike a normal file, it does not store data**—it only passes it between processes.
+
+---
+
+## **🛠 Step 3: Real DevOps Use Cases**
+
+### **1️⃣ Automating Log Analysis with Pipes**
+DevOps engineers often analyze logs **without creating temporary files**.
+
+🔹 **Example: Find Errors in System Logs**
+```sh
+tail -f /var/log/syslog | grep "error"
+```
+✅ This **continuously** monitors logs and **filters errors in real time**.
+
+🔹 **Example: Extract Specific Fields from Logs**
+```sh
+cat /var/log/syslog | awk '{print $1, $2, $5}'
+```
+✅ This extracts **date, time, and process name** from logs.
+
+---
+
+### **2️⃣ Streamlining CI/CD Pipelines**
+In **CI/CD pipelines**, pipes **avoid unnecessary files** and speed up processing.
+
+🔹 **Example: Filter and Sort Large Build Logs**
+```sh
+cat build.log | grep "FAILED" | sort | uniq
+```
+✅ This extracts **failed test cases** and removes duplicates.
+
+🔹 **Example: Run a Pipeline Without Temporary Files**
+```sh
+docker images | awk '{print $1 ":" $2}' | grep myimage
+```
+✅ This finds **Docker images matching "myimage"**.
+
+---
+
+### **3️⃣ Chaining Commands for Data Processing**
+Pipes allow **multiple commands to work together** without storing intermediate results.
+
+🔹 **Example: List and Filter Files**
+```sh
+ls -l | grep ".txt"
+```
+✅ This lists only **`.txt` files**.
+
+🔹 **Example: Find the 5 Largest Files**
+```sh
+du -ah /var/log | sort -rh | head -5
+```
+✅ This helps **identify large log files** for cleanup.
+
 
 ---
 
