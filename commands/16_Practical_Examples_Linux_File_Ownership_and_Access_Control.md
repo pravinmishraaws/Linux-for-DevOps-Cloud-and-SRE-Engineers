@@ -157,6 +157,12 @@ root
 ```bash
 chmod u+x /var/www/deploy.sh
 ```
+
+### **Check Permission**
+```bash
+ls -l /var/www/deploy.sh
+```
+
 📌 **Now, the owner (`root`) can execute the script.**
 
 #### **2️⃣ Grant Read and Execute Permission to the Group**
@@ -164,6 +170,11 @@ Since the group currently has **no permissions (`---`)**, we first need to allow
 ```bash
 chmod g+rx /var/www/deploy.sh
 ```
+### **Check Permission**
+```bash
+ls -l /var/www/deploy.sh
+```
+
 📌 **Now, group members can read and execute the script.**
 
 #### **3️⃣ Ensure Others Have No Permissions**
@@ -181,21 +192,21 @@ ls -l /var/www/deploy.sh
 ```
 ✅ **Expected Output:**
 ```
--rwxr-x---  1 root root  44 Feb 21 05:31 /var/www/deploy.sh
+---xr-x--- 1 devopsuser devops 44 Feb 21 05:31 /var/www/deploy.sh
 ```
 
 ### ** Breakdown of Updated Permissions**
 | Position | Meaning | Updated Value (`-rwxr-x---`) |
 |----------|---------|----------------------|
 | **1st**  | File Type | `-` (regular file) |
-| **2nd-4th** | Owner (`root`) | `rwx` (read, write, execute) |
+| **2nd-4th** | Owner (`root`) | `__x` (execute) |
 | **5th-7th** | Group (`root`) | `r-x` (read & execute) |
 | **8th-10th** | Others | `---` (no access) |
 
 ---
 
 ### **🚀 Final Takeaways**
-✔ **The owner (`root`) can execute, modify, and read the script.**  
+✔ **The owner (`root`) can execute the script.**  
 ✔ **Group members can read & execute the script but cannot modify it.**  
 ✔ **Others have no access for security.**  
 
