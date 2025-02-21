@@ -159,11 +159,72 @@ Imagine you have multiple versions of Node.js installed (via `nvm` or manually),
 ✅ **Creating and attaching storage for cloud servers** (e.g., **EBS volumes in AWS**).  
 ✅ **Working with containerized environments** (loopback devices for Docker).  
 
-🔍 **Check Block Devices:**
-```bash
-ls -l /dev/sda1
+Here's your updated documentation with a clear and structured explanation, ensuring students understand the concept of **block devices** in the context of an **Azure VM**, including the presence of a **temporary disk**.
+
+---
+
+## **🔹 Block Devices (b)**
+### **💡 What is it?**
+Block devices represent **physical storage devices** like hard drives, SSDs, and USB drives. These devices allow **structured read/write operations** and are used for data storage, partitioning, and file systems.
+
+---
+
+### **📌 Examples of Block Devices**
+| Block Device    | Purpose |
+|----------------|---------|
+| `/dev/sda1`    | First partition of the primary hard drive (OS disk). |
+| `/dev/nvme0n1` | NVMe SSD storage device (used in high-performance VMs). |
+| `/dev/loop0`   | Mounted disk image (commonly used for containers or ISO files). |
+
+---
+
+### **🛠 Use Cases in Cloud Environments**
+✅ **Managing storage volumes and partitions** (e.g., `fdisk`, `lsblk`).  
+✅ **Creating and attaching cloud storage** (e.g., Azure Managed Disks, AWS EBS Volumes).  
+✅ **Handling loopback devices for containers** (e.g., Docker storage layers).  
+
+## ** How to Check Block Devices?**
+To list all available block devices on a Linux system, use:
+```sh
+lsblk
 ```
-- If the first character is `b`, it is a **block device**.
+
+✅ **Example Output on an Azure VM:**
+```
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda       8:0    0   30G  0 disk 
+├─sda1    8:1    0   29G  0 part /
+├─sda15   8:15   0  106M  0 part /boot/efi
+└─sda16 259:0    0  913M  0 part /boot
+sdb       8:16   0    4G  0 disk 
+└─sdb1    8:17   0    4G  0 part /mnt
+```
+
+### **🔹 What Does This Mean?**
+- **`sda` (30GB)** → The primary OS disk attached to the VM.
+- **`sdb` (4GB)** → A secondary disk mounted at `/mnt`, provided by Azure as **temporary storage**.
+
+**📌 Important:**  
+`/dev/sdb` is a **temporary disk** in Azure VMs. It is automatically provided and mounted at `/mnt`, but it is **not persistent**—meaning data will be lost if the VM is restarted, stopped, or resized.
+
+
+### ** Confirming Block Devices Using `/dev/`**
+To check if a file is a block device, run:
+```sh
+ls -l /dev/sdb
+```
+✅ Expected Output:
+```
+brw-rw---- 1 root disk 8, 16 Feb 21 10:30 /dev/sdb
+```
+- The **first character** (`b`) indicates this is a **block device**.
+- `sdb` is the **temporary disk** Azure assigns to most VM sizes.
+
+
+### **Cloud Use Case: When to Use the Temporary Disk?**
+✅ **High-speed cache for applications** (low-latency disk operations).  
+✅ **Swap space or temporary logs** (fast disk writes but non-persistent).  
+✅ **DO NOT store critical data** (data will be lost on reboot or VM resize).  
 
 ---
 
