@@ -131,7 +131,7 @@ ls -l /var/www/deploy.sh
 
 ---
 
-## **Why is This Important?**
+## **Why is This Important for DevOps Engineers?**
 Before executing a deployment script, a **DevOps engineer must ensure the correct permissions** are in place:  
 ✔️ **The owner should be able to execute the script.**  
 ✔️ **Group members should have limited access.**  
