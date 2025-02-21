@@ -211,29 +211,98 @@ ls -l /var/www/deploy.sh
 ✔ **Others have no access for security.**  
 
 
-
 ---
 
 # **Scenario 4: Setting Permissions Using Numeric Mode**
-### **Why is this important?**
-Numeric mode provides **precise control** over file permissions.
 
-### **Set Owner Full Access, Group Read-Execute, Others Read**
+# **Setting Permissions Using Numeric Mode**
+
+## **Why is This Important?**
+Numeric mode provides **precise control** over file permissions, making it easier to manage access in a structured way. Unlike symbolic mode (`chmod u+x`), numeric mode assigns **specific permission values** to the owner, group, and others in a single command.
+
+## **Current File Permissions**
+Before making changes, let's check the current permissions of the file:
+
+```bash
+ls -l /var/www/deploy.sh
+```
+
+✅ **Example Output:**
+```
+-rwxr-x--- 1 root root 44 Feb 21 05:31 /var/www/deploy.sh
+```
+
+### **Breaking Down the Current Permissions**
+| **User Type** | **Current Permission** | **Meaning** |
+|--------------|-----------------|------------------------------|
+| **Owner (`root`)** | `rwx` | Full access (read, write, execute) |
+| **Group (`root`)** | `r-x` | Read & execute only |
+| **Others** | `---` | No access |
+
+🚨 **Problem:**
+- Currently, **others (`---`) have no access** to the script.
+- If we want **others to have read access**, we need to modify permissions.
+
+## **1️⃣ Understanding Numeric Permissions**
+Each permission (read, write, execute) has a numeric value:
+
+| Permission | Symbol | Numeric Value |
+|------------|--------|--------------|
+| **Read**   | `r`    | `4`          |
+| **Write**  | `w`    | `2`          |
+| **Execute**| `x`    | `1`          |
+
+To **set precise access**, we sum the values:
+
+| **User**  | **Required Permission** | **Value Calculation** | **Numeric Value** |
+|-----------|------------------------|---------------------|---------------|
+| **Owner** | `rwx` (read, write, execute) | `4+2+1` | **7** |
+| **Group** | `r-x` (read, execute) | `4+0+1` | **5** |
+| **Others** | `r--` (read-only) | `4+0+0` | **4** |
+
+Thus, to set **Owner: Full Access**, **Group: Read & Execute**, **Others: Read-Only**, we use:
+
 ```bash
 chmod 754 /var/www/deploy.sh
 ```
 
-📌 **Permission Breakdown:**
-| User | Permission | Value |
-|------|-----------|-------|
-| **Owner** | `rwx` (read, write, execute) | 7 (4+2+1) |
-| **Group** | `r-x` (read, execute) | 5 (4+1) |
-| **Others** | `r--` (read-only) | 4 (4) |
+## **2️⃣ Applying Numeric Permissions**
+### **Run the following command:**
+```bash
+chmod 754 /var/www/deploy.sh
+```
 
-✅ **This ensures:**  
-- The owner can modify and execute the script.  
-- Group members can execute but not modify the script.  
-- Others can only read it.
+✅ **What This Does:**
+✔ **Owner (`7`)** → Full access (read, write, execute)  
+✔ **Group (`5`)** → Read & execute only  
+✔ **Others (`4`)** → Read-only  
+
+## **3️⃣ Verify Updated Permissions**
+Run:
+```bash
+ls -l /var/www/deploy.sh
+```
+✅ **Expected Output:**
+```
+-rwxr-xr-- 1 root root 44 Feb 21 05:31 /var/www/deploy.sh
+```
+
+### **Updated Permission Breakdown**
+| **User**  | **Updated Permission** | **Numeric Value** |
+|-----------|------------------------|---------------|
+| **Owner (`root`)** | `rwx` (read, write, execute) | **7** |
+| **Group (`root`)** | `r-x` (read, execute) | **5** |
+| **Others** | `r--` (read-only) | **4** |
+
+✅ **This ensures:**
+✔ **The owner can modify and execute the script.**  
+✔ **Group members can execute but not modify the script.**  
+✔ **Others can only read the script.**  
+
+## **🚀 Final Takeaways**
+✔ **Numeric mode (`chmod 754`) simplifies permission management.**  
+✔ **It’s faster than symbolic mode when managing multiple files.**  
+✔ **Use `ls -l` to verify permissions after applying changes.**  
 
 ---
 
