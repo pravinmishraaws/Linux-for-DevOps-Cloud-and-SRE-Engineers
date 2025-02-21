@@ -49,13 +49,6 @@ groups clouduser
 ```
 📌 This command lists **all groups** the user belongs to.  
 
-✅ **Example Use Case**  
-**Scenario:** A Cloud engineer needs access to Docker but should also be part of the **Kubernetes group**.  
-```bash
-sudo usermod -aG docker,kubernetes john_cloud
-```
-📌 Now, `john_cloud` **belongs to both** `docker` and `kubernetes` groups.  
-
 ---
 
 # **Key Takeaways**  
