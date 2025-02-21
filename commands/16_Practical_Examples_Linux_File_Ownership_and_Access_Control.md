@@ -105,38 +105,93 @@ Now, **devopsuser** owns the script, and **devops group members** can access it.
 
 # **Scenario 3: Changing File Permissions**
 ### **Why is this important?**
-To ensure **security and proper execution**, a DevOps engineer needs to adjust file permissions.
 
-**Note:** To change the persion, you need to be a root user so, using below command to become root user. 
+## **Understanding File Permissions and Adjusting Them for Secure Execution**
 
-```bash
-sudo su - 
-```
-
-### **Grant Execute Permission to the Owner**
-```bash
-chmod u+x /var/www/deploy.sh
-```
-
-### **Remove Write Permission from the Group**
-```bash
-chmod g-w /var/www/deploy.sh
-```
-
-### **Remove Read Permission for Others**
-```bash
-chmod o-r /var/www/deploy.sh
-```
-
-### **Verify Permissions**
+### **Current File Permissions:**
 ```bash
 ls -l /var/www/deploy.sh
 ```
+✅ **Example Output:**
+```
+---------- 1 root root 44 Feb 21 05:31 /var/www/deploy.sh
+```
 
+### **Breaking Down the Current Permissions**
+| Position | Meaning | Current Value (`----------`) |
+|----------|---------|----------------------|
+| **1st**  | File Type | `-` (regular file) |
+| **2nd-4th** | Owner’s Permissions | `---` (no read, write, or execute) |
+| **5th-7th** | Group Permissions | `---` (no read, write, or execute) |
+| **8th-10th** | Others’ Permissions | `---` (no read, write, or execute) |
+
+🚨 **Problem:**  
+- **The owner, group, and others have NO permissions at all!**  
+- The script **cannot be read, modified, or executed** by anyone.
+
+---
+
+## **Why is This Important?**
+Before executing a deployment script, a **DevOps engineer must ensure the correct permissions** are in place:  
+✔️ **The owner should be able to execute the script.**  
+✔️ **Group members should have limited access.**  
+✔️ **Others should have NO access for security reasons.**
+
+## **1️⃣ Switch to Root User (Required)**
+Since the file is owned by `root`, **only root can modify permissions**. Switch to the root user:
+```bash
+sudo su -
+```
+Now, confirm you are the root user:
+```bash
+whoami
+```
 ✅ **Expected Output:**
 ```
--rwxr-x---  1 devopsuser devops  1024 Feb 20 10:00 /var/www/deploy.sh
+root
 ```
+
+## **2️⃣ Adjusting File Permissions**
+### **🔹 Grant Execute Permission to the Owner**
+```bash
+chmod u+x /var/www/deploy.sh
+```
+📌 **Now, the owner (`root`) can execute the script.**
+
+### **🔹 Remove Write Permission from the Group**
+```bash
+chmod g-w /var/www/deploy.sh
+```
+📌 **The group can read but not modify the file.**
+
+### **🔹 Remove Read Permission for Others**
+```bash
+chmod o-r /var/www/deploy.sh
+```
+📌 **Others cannot view the script, enhancing security.**
+
+## **3️⃣ Verify Updated Permissions**
+```bash
+ls -l /var/www/deploy.sh
+```
+✅ **Expected Output:**
+```
+-rwxr-x---  1 root root  44 Feb 21 05:31 /var/www/deploy.sh
+```
+
+### **Breaking Down the Updated Permissions**
+| Position | Meaning | Updated Value (`-rwxr-x---`) |
+|----------|---------|----------------------|
+| **1st**  | File Type | `-` (regular file) |
+| **2nd-4th** | Owner (`root`) | `rwx` (read, write, execute) |
+| **5th-7th** | Group (`root`) | `r-x` (read & execute) |
+| **8th-10th** | Others | `---` (no access) |
+
+✅ **Final Permissions:**
+✔ **Root can execute, modify, and read the script.**  
+✔ **Group members can read & execute but not modify.**  
+✔ **Others have NO access for security.**
+
 
 ---
 
