@@ -50,7 +50,7 @@ ls -l /var/www/deploy.sh
 ```
 ✅ **Expected Output:**
 ```
--rwxr-xr--  1 devopsuser devops  1024 Feb 20 10:00 /var/www/deploy.sh
+---------- 1 root root 44 Feb 21 05:31 /var/www/deploy.sh
 ```
 
 ---
