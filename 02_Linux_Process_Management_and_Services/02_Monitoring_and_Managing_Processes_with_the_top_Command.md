@@ -103,7 +103,7 @@ If you are managing a cloud environment with multiple applications running, it m
 1. Press `o` while in `top`.  
 2. Type the filter criteria, such as:  
    ```
-   USER=devops
+   USER=azureus
    ```
    This will only show processes started by the **devops** user.  
 
