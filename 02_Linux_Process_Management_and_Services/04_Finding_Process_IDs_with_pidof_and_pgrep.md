@@ -117,7 +117,7 @@ pgrep -x sleep
 ```
 This ensures that only **sleep** processes (and not similar names) are shown.  
 
-### **Real-World Examples for DevOps & Cloud Engineers**  
+# **Real-World Examples for DevOps & Cloud Engineers**  
 
 As a **DevOps Engineer** managing cloud workloads, you often deal with **multiple processes running under different users** on Linux servers. Whether you're **troubleshooting web applications, monitoring database services, or managing background jobs**, filtering process searches is essential for **quick diagnosis and debugging**.  
 
