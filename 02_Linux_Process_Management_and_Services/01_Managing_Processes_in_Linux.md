@@ -222,28 +222,99 @@ Let’s now move one step further and learn how to **search for a specific proce
 
 ## **Finding Specific Processes**  
 
-If you want to search for a specific process instead of scrolling through hundreds of running processes, you can **filter them by name or ID**.  
+Understood! Here is the revised version without emojis.
 
-### **Find a Process by Name**  
-```bash
-ps -ef | grep nginx
-```
-Example output:  
-```
-root       345     1  0 10:01 ?        00:00:00 nginx: master process
-www-data   567   345  0 10:01 ?        00:00:00 nginx: worker process
-```
+---
 
-### **Find a Process by ID**  
+# **Finding Specific Processes in Linux**  
+
+When managing services and applications in Linux, it’s crucial to know how to find running processes. Instead of scrolling through hundreds of processes manually, we can filter them by name or process ID (PID) using `ps`, `pgrep`, and `grep`.  
+
+Let’s go step by step with real, interactive examples that students can run on their system.  
+
+## **Starting a Sample Background Process**  
+
+Since Nginx is not running yet, searching for it will return no results. To demonstrate process search commands, let's start a simple background process (`sleep`) and then search for it.  
+
+### **Step 1: Start a Background Process**  
 ```bash
-pgrep nginx
+sleep 500 &
 ```
-Output:  
+This command will:  
+- Run `sleep 500` in the background, which keeps running for 500 seconds.  
+- The `&` at the end ensures the command runs in the background.  
+
+## **1. Find a Process by Name**  
+
+### **Using `ps` with `grep`**
+```bash
+ps -ef | grep sleep
 ```
-345
-567
+Example Output:  
 ```
-If no output appears, it means **the process is not running**.  
+user    1234  5678  0 10:05 pts/0  00:00:00 sleep 500
+user    1235  5678  0 10:05 pts/0  00:00:00 grep --color=auto sleep
+```
+Explanation:  
+- The first line shows the `sleep` process running in the background.  
+- The second line is the `grep` command itself (this can be ignored).  
+
+If no output appears, it means no `sleep` process is running.  
+
+## **2. Find a Process by ID (`pgrep`)**  
+
+Instead of searching by name, we can directly find the process ID (PID) using `pgrep`.  
+
+```bash
+pgrep sleep
+```
+Example Output:  
+```
+1234
+```
+Explanation:  
+- The number `1234` is the process ID (PID) of the `sleep` process.  
+- If there is no output, it means the process is not running.  
+
+## **3. View Process Details with `ps -fp <PID>`**  
+
+Once we get the PID, we can view detailed information about the process:  
+
+```bash
+ps -fp 1234
+```
+Example Output:  
+```
+UID   PID  PPID  C STIME TTY          TIME CMD
+user 1234  5678  0 10:05 pts/0    00:00:00 sleep 500
+```
+Breakdown of the Output:  
+- PID: Process ID (`1234`).  
+- PPID: Parent Process ID (`5678`).  
+- CMD: The command that started the process (`sleep 500`).  
+
+## **4. Find Multiple Matching Processes (`pgrep -l`)**  
+
+If multiple instances of a process are running, we can list all of them:  
+
+```bash
+pgrep -l sleep
+```
+Example Output:  
+```
+1234 sleep
+1256 sleep
+```
+This means that two instances of `sleep` (`1234` and `1256`) are running.  
+
+## **5. Filtering Processes for Better Search (`grep -v grep`)**  
+
+When using `ps -ef | grep process_name`, the output includes the grep command itself. To remove it:  
+
+```bash
+ps -ef | grep sleep | grep -v grep
+```
+This removes the `grep` process from the search results.  
 
 ---
 
