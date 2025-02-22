@@ -2,18 +2,25 @@
 
 ## **Why Should DevOps and Cloud Engineers Learn Apache?**  
 
-Imagine you are a **DevOps Engineer** setting up a **website** or **API** for a client. You need a **stable, flexible, and widely supported web server** that can handle dynamic content, secure connections, and scale efficiently.  
+Imagine you are a **DevOps Engineer** deploying **The EpicBook!**, an online bookstore that allows users to browse books, add them to their cart, and complete purchases.  
 
-Or, as a **Cloud Engineer**, you are managing a **multi-tenant cloud platform** and need to **host multiple websites** on a single server.  
+The challenge?  
+
+- The **main bookstore** should be accessible at **http://theepicbooks.com**  
+- The **admin panel** for managing books and orders should be available at **http://admin.theepicbooks.com**  
+- Both applications need **secure and optimized web hosting**  
+- Some static content (e.g., book covers) should be **cached for performance**  
+
+As a **Cloud Engineer**, you are responsible for ensuring that **both applications run smoothly** and can handle **high traffic loads** efficiently.  
 
 This is where **Apache HTTP Server** comes in.  
 
 By the end of this lesson, you will be able to:  
-✔ **Understand Apache’s architecture and how it processes requests.**  
-✔ **Install and configure Apache on Ubuntu/Debian and CentOS/RHEL.**  
-✔ **Modify Apache configuration files for different use cases.**  
-✔ **Set up virtual hosts to host multiple websites on a single server.**  
-✔ **Enable and disable Apache modules for extended functionality.**  
+✔ **Understand Apache’s architecture and request-handling process**  
+✔ **Install and configure Apache on Ubuntu/Debian and CentOS/RHEL**  
+✔ **Set up Virtual Hosts for multiple applications**  
+✔ **Optimize Apache for performance and security**  
+✔ **Enable and disable Apache modules to extend functionality**  
 
 Let’s begin by understanding **how Apache works**.  
 
@@ -21,35 +28,15 @@ Let’s begin by understanding **how Apache works**.
 
 ## **1. Apache Architecture**  
 
-Apache is a **modular, process-driven web server** that can handle **static and dynamic content** efficiently.  
+Apache is a **modular, process-driven web server** that efficiently handles **static and dynamic content**. It’s widely used for **hosting web applications**, including **The EpicBook!**  
 
-### **Core Components of Apache**  
+### **How Apache Handles Requests for The EpicBook!**  
 
-| Component | Description |
-|-----------|------------|
-| **Core Server** | Handles configuration parsing, logging, and request processing. |
-| **Modules** | Extend Apache’s functionality (e.g., SSL, URL rewriting, reverse proxying). |
-| **Multi-Processing Modules (MPMs)** | Control how Apache handles client requests. |
-
-### **Apache Modules**  
-Apache’s **modules** extend its functionality. Common modules include:  
-
-| Module | Purpose |
-|--------|---------|
-| `mod_ssl` | Enables **SSL/TLS** for secure connections. |
-| `mod_proxy` | Allows **reverse proxying** for backend applications. |
-| `mod_rewrite` | Enables **URL rewriting** for clean URLs. |
-
-### **Apache Multi-Processing Modules (MPMs)**  
-Apache uses **MPMs** to control how client requests are handled.  
-
-| MPM Type | Description | Best Use Case |
-|----------|-------------|---------------|
-| `prefork` | Each request is handled by a separate process. | Best for compatibility (PHP applications). |
-| `worker` | Uses threads to handle requests efficiently. | Better performance than prefork. |
-| `event` | Optimized for handling many concurrent requests. | Best for high-traffic sites and APIs. |
-
-Now that we understand Apache’s architecture, let’s install it.  
+1. A user visits **http://theepicbooks.com** to browse books.  
+2. Apache **serves static files** (HTML, CSS, images) directly.  
+3. If a request requires **dynamic content** (e.g., book search, checkout), Apache **forwards the request** to the **Node.js backend** using **mod_proxy**.  
+4. A staff member logs in to **http://admin.theepicbooks.com** to update book listings.  
+5. Apache ensures that **each application runs in its isolated environment** via **Virtual Hosts**.  
 
 ---
 
@@ -113,72 +100,100 @@ Apache’s behavior is controlled by **configuration files**.
 | **Access Log** | `/var/log/apache2/access.log` | `/var/log/httpd/access_log` |
 | **Error Log** | `/var/log/apache2/error.log` | `/var/log/httpd/error_log` |
 
-Now, let’s configure **virtual hosts** to serve multiple websites.  
+Now, let’s configure **Virtual Hosts** to serve **multiple applications on the same server**.  
 
 ---
 
-## **4. Creating a Virtual Host in Apache**  
+## **4. Creating Virtual Hosts for The EpicBook!**  
 
 ### **Why Use Virtual Hosts?**  
-Apache **virtual hosts** allow you to:  
-- **Host multiple websites on a single server**.  
-- **Assign separate domains to different directories**.  
-- **Control configurations for each website independently**.  
+For **The EpicBook!**, we have **two applications** running on the same server:  
+
+| Application | URL | Purpose |
+|------------|--------------------------|------------------------------|
+| **Main Bookstore** | `http://theepicbooks.com` | Allows users to browse and purchase books |
+| **Admin Panel** | `http://admin.theepicbooks.com` | Used by staff to manage book inventory |
+
+Apache **Virtual Hosts** allow us to:  
+- **Host multiple websites on a single server**  
+- **Assign separate domains to different directories**  
+- **Apply different configurations for each application**  
 
 ---
 
-### **Step 1: Create a Website Directory**  
+### **Step 1: Create Separate Directories for Each Application**  
 ```bash
-sudo mkdir -p /var/www/example.com/html
-sudo chmod -R 755 /var/www/example.com
+sudo mkdir -p /var/www/theepicbooks.com/html
+sudo mkdir -p /var/www/admin.theepicbooks.com/html
+sudo chmod -R 755 /var/www/theepicbooks.com
+sudo chmod -R 755 /var/www/admin.theepicbooks.com
 ```
 
 ---
 
-### **Step 2: Add a Test File**  
+### **Step 2: Add Test Files for Both Applications**  
+
+#### **Main Bookstore**
 ```bash
-echo "Welcome to Example.com" | sudo tee /var/www/example.com/html/index.html
+echo "Welcome to The EpicBook!" | sudo tee /var/www/theepicbooks.com/html/index.html
+```
+
+#### **Admin Panel**
+```bash
+echo "Welcome to The EpicBook Admin Panel!" | sudo tee /var/www/admin.theepicbooks.com/html/index.html
 ```
 
 ---
 
-### **Step 3: Create a Virtual Host Configuration File**  
+### **Step 3: Create Virtual Host Configuration Files**  
 
 #### **On Ubuntu/Debian**  
 ```bash
-sudo nano /etc/apache2/sites-available/example.com.conf
+sudo nano /etc/apache2/sites-available/theepicbooks.com.conf
+sudo nano /etc/apache2/sites-available/admin.theepicbooks.com.conf
 ```
 
 #### **On CentOS/RHEL**  
 ```bash
-sudo nano /etc/httpd/conf.d/example.com.conf
+sudo nano /etc/httpd/conf.d/theepicbooks.com.conf
+sudo nano /etc/httpd/conf.d/admin.theepicbooks.com.conf
 ```
 
 ---
 
-### **Step 4: Define the Virtual Host Configuration**  
-Add the following content to your configuration file:  
+### **Step 4: Define Virtual Host Configurations**  
 
+#### **Main Bookstore (theepicbooks.com)**  
 ```apache
 <VirtualHost *:80>
-    ServerName example.com
-    ServerAlias www.example.com
-    DocumentRoot /var/www/example.com/html
+    ServerName theepicbooks.com
+    ServerAlias www.theepicbooks.com
+    DocumentRoot /var/www/theepicbooks.com/html
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
 
-✅ **Save and exit the file.**  
+---
+
+#### **Admin Panel (admin.theepicbooks.com)**  
+```apache
+<VirtualHost *:80>
+    ServerName admin.theepicbooks.com
+    DocumentRoot /var/www/admin.theepicbooks.com/html
+    ErrorLog ${APACHE_LOG_DIR}/admin-error.log
+    CustomLog ${APACHE_LOG_DIR}/admin-access.log combined
+</VirtualHost>
+```
+
+✅ **Save and exit the files.**  
 
 ---
 
-### **Step 5: Enable the Virtual Host (Ubuntu/Debian Only)**  
+### **Step 5: Enable the Virtual Hosts (Ubuntu/Debian Only)**  
 ```bash
-sudo a2ensite example.com.conf
-```
-Then, reload Apache:  
-```bash
+sudo a2ensite theepicbooks.com.conf
+sudo a2ensite admin.theepicbooks.com.conf
 sudo systemctl reload apache2
 ```
 
@@ -187,13 +202,13 @@ sudo systemctl reload apache2
 sudo systemctl reload httpd
 ```
 
-✅ **Verification Step:** Open a browser and go to:  
+✅ **Verification Step:** Open a browser and visit:  
 ```
-http://example.com
+http://theepicbooks.com
+http://admin.theepicbooks.com
 ```
-You should see **"Welcome to Example.com"** displayed.
 
-Now, let’s manage Apache modules.  
+Now, let’s manage **Apache modules** to enhance security and performance.  
 
 ---
 
@@ -204,22 +219,9 @@ Now, let’s manage Apache modules.
 sudo a2enmod module_name
 sudo systemctl reload apache2
 ```
-Example: Enable **SSL** support:  
+Example: Enable **mod_rewrite** for URL redirection:  
 ```bash
-sudo a2enmod ssl
-sudo systemctl reload apache2
-```
-
----
-
-### **Disable a Module (Ubuntu/Debian)**  
-```bash
-sudo a2dismod module_name
-sudo systemctl reload apache2
-```
-Example: Disable **SSL** support:  
-```bash
-sudo a2dismod ssl
+sudo a2enmod rewrite
 sudo systemctl reload apache2
 ```
 
@@ -231,42 +233,16 @@ sudo systemctl reload apache2
 |--------|---------|
 | `mod_ssl` | Enables **SSL/TLS** for HTTPS. |
 | `mod_rewrite` | Allows **URL rewriting** (e.g., redirecting `http` to `https`). |
-| `mod_proxy` | Enables **reverse proxy** functionality. |
-
-Now, let’s look at common **troubleshooting** methods.  
-
----
-
-## **Troubleshooting Apache Issues**  
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `403 Forbidden` | Incorrect file permissions | Run `sudo chmod -R 755 /var/www/html` |
-| `404 Not Found` | Virtual host misconfiguration | Check `ServerName` and `DocumentRoot` in `.conf` file |
-| `Address already in use` | Another process is using port 80 | Run `sudo netstat -tulnp | grep :80` |
-| `Apache not starting` | Syntax error in configuration | Run `sudo apachectl configtest` |
-
----
-
-## **Hands-On Challenges**  
-
-Try these tasks to apply your knowledge:  
-
-1. **Install Apache on your system and verify it is running.**  
-2. **Create a virtual host for `example.com` and serve a simple HTML page.**  
-3. **Enable the `mod_rewrite` module and configure URL redirection.**  
-4. **Check Apache’s access and error logs for troubleshooting.**  
-5. **Restart Apache after making changes to its configuration.**  
+| `mod_proxy` | Enables **reverse proxy** functionality for backend apps. |
 
 ---
 
 ## **Key Takeaways**  
 
-- Apache is a **modular, flexible web server** for handling static and dynamic content.  
-- It uses **MPMs** (`prefork`, `worker`, `event`) to handle requests.  
-- **Virtual hosts** allow Apache to host multiple websites on one server.  
-- Apache modules **extend functionality** (SSL, proxying, URL rewriting).  
-- Configuration files are stored in `/etc/apache2/` (Ubuntu) and `/etc/httpd/` (CentOS).  
+- **Apache Virtual Hosts** allow hosting multiple applications on one server.  
+- **Modules like `mod_ssl` and `mod_proxy` enhance functionality.**  
+- **Apache can be used as a reverse proxy to serve backend applications.**  
+- **Proper configuration of Virtual Hosts ensures smooth website hosting.**  
 
 ---
 
@@ -275,7 +251,6 @@ Try these tasks to apply your knowledge:
 Now that you have set up **Apache**, the next step is:  
 
 - **Installing and configuring Nginx.**  
-- **Understanding how Nginx compares to Apache.**  
 - **Using Nginx as a reverse proxy for Apache.**  
 
 Let’s move forward and explore **Nginx Web Server!**
