@@ -1,180 +1,212 @@
-# **Managing Disk and Filesystem in Linux**  
+# **Managing Disk and Filesystem in Linux (Azure Edition)**  
 
 ## **Why Should DevOps and Cloud Engineers Learn Disk and Filesystem Management?**  
 
-Imagine you are a **DevOps or Cloud Engineer** setting up an **AWS EC2 instance** or a **Google Cloud VM** for a database server. Your application team reports that **disk space is running out**, and you need to **add a new volume** to the server.  
+Imagine you are a **Cloud Engineer managing an Azure Virtual Machine**. Your team notifies you that **storage is running low**, and they need **additional disk space** to store logs and database files.  
 
-To resolve this, you must:  
-- **Attach a new disk** to the server.  
-- **Format and mount the disk** so the system can use it.  
-- **Choose the right file system** to optimize performance and reliability.  
+As a **DevOps Engineer**, you might be working on **The EpicBook!**, a high-traffic online bookstore. The **database is growing rapidly**, and you need to **attach and configure additional storage** for better performance.  
 
-Understanding disk and filesystem management is essential to:  
-- Ensure efficient storage utilization.  
-- Format and mount new disks in cloud environments.  
-- Choose the right file system for performance and stability.  
+To solve these problems, you need to:  
+- **Attach a new Azure Managed Disk** to your VM.  
+- **Format and mount the disk** so it becomes usable.  
+- **Choose the right file system** based on workload requirements.  
 
 By the end of this lesson, you will be able to:  
-- Understand what a disk is and how storage works in Linux.  
-- Learn about file systems and their role in organizing data.  
-- Identify common file systems and their use cases.  
+✔ Understand what a **disk** is and how storage works in Linux.  
+✔ Learn about **file systems** and their role in organizing data.  
+✔ Identify **common file systems** and their use cases.  
+✔ **Attach, format, and mount a new Azure disk** in a VM.  
 
-Let’s begin by understanding what a disk is.
+Let’s start with the basics.  
 
 ---
 
 ## **1. What is a Disk?**  
 
-A disk is a physical or virtual storage device that stores data in blocks. In a Linux system, disks can be:  
+A **disk** is a storage device that holds data in blocks. In **Azure Virtual Machines**, storage is managed as:  
 
-- **Physical disks** (HDDs, SSDs, USB drives).  
-- **Virtual disks** (EBS volumes in AWS, Persistent Disks in Google Cloud).  
-- **Network storage** (NFS, EFS, or SAN drives).  
+- **OS Disk** – The primary disk where the operating system is installed.  
+- **Data Disks** – Additional disks used for application storage.  
+- **Temporary Disk** – A non-persistent disk for swap space and temporary files.  
 
-Each disk is divided into partitions, and each partition is formatted with a file system.
+Each disk appears as a **device file** in Linux (`/dev/sdX` or `/dev/nvmeX`).  
 
-### **Example: Adding a New Disk in a Cloud Server**  
+---
 
-If you create an **EC2 instance** on AWS, the root disk may be `/dev/xvda`, and additional attached volumes might be `/dev/xvdb` or `/dev/nvme1n1`. These disks must be formatted and mounted before they can be used by the operating system.  
+### **Example: Attaching a New Disk to an Azure VM**  
 
-Now that we understand disks, let’s move on to file systems.
+When you add a **new Managed Disk** to an **Azure VM**, it does not automatically appear as a usable drive. You must:  
+1. **Identify the new disk** using `lsblk`.  
+2. **Create a file system** (`ext4`, `xfs`, or `btrfs`).  
+3. **Mount the disk** to a directory (`/mnt/data`).  
+4. **Ensure persistence** after a reboot.  
+
+Now that we understand disks, let’s move on to **file systems**.
 
 ---
 
 ## **2. What is a Filesystem?**  
 
-A filesystem is a way to store, organize, and retrieve files on a disk. It manages:  
-
-- How data is stored and accessed.  
-- Permissions and metadata (ownership, timestamps).  
-- Data integrity and performance.  
+A **filesystem** is the way data is stored, organized, and retrieved on a disk. It provides:  
+✔ **Structure** – Organizes data into files and directories.  
+✔ **Permissions** – Controls who can access files.  
+✔ **Metadata** – Stores information like timestamps and ownership.  
 
 ### **Why is a Filesystem Important?**  
 
-- Without a file system, a disk is just raw storage.  
-- A file system structures the disk so that the operating system can read and write data efficiently.  
-
-### **Example: Formatting a New Disk for Application Data**  
-
-If you add a 100GB EBS volume to an AWS EC2 instance, it appears as unformatted storage (`/dev/xvdb`). Before using it, you must:  
-
-1. Create a file system (e.g., `ext4` or `xfs`).  
-2. Mount the disk to a directory (`/mnt/data`).  
-3. Ensure it persists after a reboot.  
-
-Now, let’s explore common file systems in Linux.
+- **Without a filesystem**, a disk is just **raw storage**.  
+- The OS needs a filesystem to **store and access data efficiently**.  
 
 ---
 
-## **3. Common File Systems in Linux**  
+## **3. Common File Systems in Linux (Used in Azure)**  
 
-Different file systems are optimized for different workloads.
+Different file systems have different use cases in **cloud environments**.
 
-| Filesystem | Use Case | Best For |
-|------------|---------|----------|
-| ext4 | Default for most Linux distributions | General-purpose use |
-| xfs | High-performance journaling file system | Large-scale storage, databases |
-| btrfs | Advanced features like snapshots and RAID | Data integrity, backups |
-| NTFS | Windows file system | Dual-boot with Windows |
-| vfat / exFAT | Universal compatibility | USB drives, external storage |
-| NFS | Networked file system | Shared storage across multiple servers |
+| Filesystem | Best Use Case |
+|------------|-------------|
+| **ext4** | Default for most Linux distributions, general-purpose use. |
+| **XFS** | Optimized for **high-performance workloads** (databases, logs). |
+| **Btrfs** | Supports **snapshots, compression, and advanced storage features**. |
+| **NTFS** | Used when mounting Windows partitions. |
 
-Let’s go over when to use each file system.
+Azure **defaults to XFS** for high-performance workloads, but Btrfs is useful for **snapshot-based backups**.  
 
 ---
 
-### **ext4 – The Standard Filesystem**
-- Most Linux distributions use `ext4` as the default.  
-- Reliable and good for general workloads.  
+### **ext4 – The Standard Linux Filesystem**
+- Used in **Ubuntu and Debian** as the default file system.  
+- Works well for **general-purpose workloads**.  
 
 #### **Format a disk with ext4**
 ```bash
-sudo mkfs.ext4 /dev/xvdb
+sudo mkfs.ext4 /dev/sdc
 ```
 
 ---
 
-### **XFS – Best for Large-Scale Storage**
-- Used in high-performance environments (e.g., AWS default for RHEL).  
-- Handles large files and fast writes well.  
+### **XFS – Best for High-Performance Storage**
+- **Recommended by Azure** for databases, logs, and high-write workloads.  
+- Handles **large files efficiently** and scales well.  
 
 #### **Format a disk with XFS**
 ```bash
-sudo mkfs.xfs /dev/xvdb
+sudo mkfs.xfs /dev/sdc
 ```
 
 ---
 
-### **btrfs – Best for Snapshots and RAID**
-- Supports snapshots and built-in RAID.  
-- Used in backup systems and advanced storage needs.  
+### **Btrfs – Best for Snapshots and Compression**
+- Supports **snapshots, data integrity checks, and compression**.  
+- Ideal for **backup systems, versioned data, and large-scale storage**.  
 
-#### **Format a disk with btrfs**
+#### **Format a disk with Btrfs**
 ```bash
-sudo mkfs.btrfs /dev/xvdb
+sudo mkfs.btrfs /dev/sdc
 ```
 
 ---
 
-### **NFS – Networked File System**
-- Allows multiple servers to share storage.  
-- Used in cloud environments (AWS EFS, Google Filestore).
-
-#### **Mount an NFS Share**
-```bash
-sudo mount -t nfs 192.168.1.10:/data /mnt/nfs
-```
-
----
-
-### **Choosing the Right File System for Different Use Cases**
+### **Choosing the Right File System in Azure**
 
 | Use Case | Recommended File System |
 |----------|------------------------|
-| General use (home, office) | ext4 |
-| High-performance databases | XFS |
-| File versioning & snapshots | btrfs |
-| Dual-boot with Windows | NTFS |
-| Cloud-based shared storage | NFS |
+| General-purpose data storage | ext4 |
+| High-performance applications (databases, logs) | XFS |
+| Snapshots, backups, and compression | Btrfs |
+| Windows compatibility | NTFS |
 
 ---
 
-## **Hands-On Challenge**  
+## **Hands-On: Attaching and Formatting a Disk in Azure**  
 
-1. Check the file system of your root partition.  
+### **Step 1: Attach a New Disk to Your Azure VM**  
+
+Go to **Azure Portal → Virtual Machines → Your VM → Disks → Add Data Disk**.  
+
+- **Choose size:** 20GB  
+- **Host caching:** None  
+- **Save and apply changes**  
+
+---
+
+### **Step 2: Verify the New Disk in Linux**  
+
+SSH into your Azure VM:  
 ```bash
-df -T /
+ssh azureuser@your-vm-ip
+```
+List all attached disks:  
+```bash
+lsblk
+```
+You should see a **new disk** (e.g., `/dev/sdc`).  
+
+---
+
+### **Step 3: Create a File System on the Disk**  
+
+If the disk is **unformatted**, create a new **ext4**, **XFS**, or **Btrfs** file system:  
+
+For **ext4**:  
+```bash
+sudo mkfs.ext4 /dev/sdc
 ```
 
-2. Format a new disk with `ext4` and mount it.  
+For **XFS**:  
 ```bash
-sudo mkfs.ext4 /dev/xvdb
-sudo mount /dev/xvdb /mnt/data
+sudo mkfs.xfs /dev/sdc
 ```
 
-3. Determine which file system is best for an application server.  
+For **Btrfs**:  
 ```bash
-df -Th
+sudo mkfs.btrfs /dev/sdc
+```
+
+---
+
+### **Step 4: Mount the Disk**  
+
+Create a mount point:  
+```bash
+sudo mkdir -p /mnt/data
+```
+Mount the disk:  
+```bash
+sudo mount /dev/sdc /mnt/data
+```
+Check if it’s mounted:  
+```bash
+df -h
+```
+
+---
+
+### **Step 5: Persist the Mount After Reboot**  
+
+Edit `/etc/fstab` to ensure the disk mounts automatically:  
+```bash
+echo "/dev/sdc /mnt/data xfs defaults 0 0" | sudo tee -a /etc/fstab
 ```
 
 ---
 
 ## **Key Takeaways**  
 
-- A disk is a storage device that holds partitions and file systems.  
-- A file system organizes and structures data on a disk.  
-- ext4 is the most commonly used file system in Linux.  
-- XFS is optimized for high-performance workloads (like databases).  
-- NFS allows multiple servers to share a single storage system.  
+- Azure VMs use **Managed Disks** that must be formatted before use.  
+- The **ext4** filesystem is the default in Linux, while **XFS** is better for high-performance workloads.  
+- **Btrfs** is useful for snapshots, compression, and backup systems.  
+- After attaching a new disk, it must be **formatted and mounted** to be usable.  
+- Adding the disk to **`/etc/fstab`** ensures it **persists after reboot**.  
 
 ---
 
 ## **What’s Next?**  
 
-Now that you understand disks and file systems, the next step is:  
+Now that you’ve **attached, formatted, and mounted a new disk**, the next step is:  
 
-- Listing and identifying disks in a Linux system.  
-- Creating, formatting, and mounting partitions.  
-- Managing disk storage efficiently in cloud environments.  
+- **Listing and identifying partitions** on a Linux system.  
+- **Using tools like `lsblk`, `fdisk`, and `df`** to analyze disk space.  
+- **Understanding how Linux organizes storage devices**.  
 
-Let’s move forward and explore how to list disks and partitions in Linux.
+Let’s move forward and **list disks and partitions in Linux**.  
