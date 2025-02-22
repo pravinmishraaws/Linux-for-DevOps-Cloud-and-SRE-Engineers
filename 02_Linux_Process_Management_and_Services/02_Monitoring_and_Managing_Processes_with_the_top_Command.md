@@ -43,6 +43,8 @@ KiB Swap:  2000000 total,  1900000 free,   100000 used.  580000 avail Mem
 ```
 Below this, a **list of running processes** is displayed.  
 
+**Note:** type Shift 0 (Zero) to clear filter
+
 Now that we have launched `top`, let’s understand how to interpret its output.  
 
 ---
