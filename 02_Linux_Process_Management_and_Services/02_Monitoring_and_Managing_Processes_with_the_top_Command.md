@@ -121,18 +121,66 @@ To **kill a process in `top`**:
 2. Enter the **Process ID (PID)** of the process you want to kill.  
 3. Press `Enter`.  
 
-### **Example Scenario**  
-You are a **DevOps engineer managing a Kubernetes cluster**. A process in a containerized application is consuming excessive CPU, affecting other services. Instead of restarting the entire cluster, you use `top` to **identify and terminate** the faulty process.  
+### **Example Scenario: Identifying and Terminating a High-CPU Process**  
 
-Alternatively, if you already know the **Process ID (PID)**, you can kill it from the terminal without using `top`:  
+#### **Background**  
+As a **DevOps Engineer**, you are managing a Kubernetes cluster. One of your containerized applications is consuming excessive CPU, affecting the performance of other services. Instead of restarting the entire cluster, you need to **identify the faulty process and terminate it** efficiently.
+
+To help students understand this scenario practically, let's simulate a high-CPU process and then manage it using `top`.
+
+
+### **Step 1: Start a Sample High-CPU Process**  
+To simulate a process that consumes CPU, run the following command:
+```bash
+dd if=/dev/zero of=/dev/null &
+```
+#### **What This Does**  
+- `dd` is a command that copies data.  
+- `if=/dev/zero` reads an endless stream of zeros.  
+- `of=/dev/null` discards the data, keeping the process running indefinitely.  
+- The `&` runs it in the background, so it doesn’t block the terminal.
+
+Verify that the process is running:
+```bash
+ps aux | grep dd
+```
+
+### **Step 2: Identify the High-CPU Process Using `top`**  
+Run `top` to check active processes:
+```bash
+top
+```
+Inside `top`:
+- Look for a process named `dd` in the **COMMAND** column.
+- Note its **PID** (Process ID) under the **PID** column.
+
+### **Step 3: Kill the Process Using `kill`**  
+If you already know the PID, you can terminate the process from the terminal:
+
+```bash
+kill <PID>
+```
+For example:
 ```bash
 kill 3456
 ```
-If the process doesn’t stop, use:  
+If the process doesn’t stop, force termination using:
 ```bash
 kill -9 3456
 ```
-This forces the process to terminate.  
+
+Alternatively, you can **kill the process directly inside `top`**:
+1. Press **k** while `top` is running.
+2. Enter the **PID** of the process.
+3. Press **Enter** to terminate it.
+
+### **Step 4: Verify That the Process Has Stopped**  
+After terminating the process, check if it is still running:
+```bash
+ps aux | grep dd
+```
+If no output appears, the process has been successfully terminated.
+
 
 Now, let’s learn how to **change the priority of processes**.  
 
