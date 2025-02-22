@@ -1,21 +1,37 @@
-# **Finding Process IDs with `pidof` and `pgrep`**  
+# **Finding and Managing Processes with `pidof` and `pgrep`**  
 
 ## **Why Should DevOps and Cloud Engineers Learn These Commands?**  
 
-Imagine you are a **DevOps Engineer managing cloud infrastructure**. Your web application is running on an **AWS EC2 instance**, but users are reporting that the website is **not responding**.  
+Imagine you are a **DevOps Engineer** managing cloud-based infrastructure. Your team has deployed a web application on a **Linux server**, but users are reporting that the website is **down**. You suspect that the **Apache or Nginx web server has crashed**, but how do you confirm if the service is running?  
 
-You suspect that the **Apache web server might have crashed**. Instead of manually searching for its process in a long list of running tasks, you need a quick way to check whether the **Apache service is running** and, if it is, find its **Process ID (PID)**.  
+Instead of manually searching through hundreds of running processes, you need a **quick way to check if the process exists and find its Process ID (PID)**.  
 
-This is where **`pidof` and `pgrep`** come in.  
+This is where `pidof` and `pgrep` come in.  
 
 By the end of this lesson, you will be able to:  
 
 - Find the **Process ID (PID) of a running application** using `pidof`.  
 - Search for processes by name using `pgrep`.  
 - Understand the **differences between `pidof` and `pgrep`**.  
-- Use **filtering and advanced options** to refine your search.  
+- Use **filtering options** to refine your search.  
 
-Let’s start with `pidof`.  
+Let’s start with a real-world example where you **simulate a running process** before searching for it.  
+
+---
+
+## **Starting a Background Process for Testing**  
+
+Since **Nginx and Apache may not be running** on your system yet, searching for them may return **no results**. To **demonstrate process search commands**, we will first **start a process manually** and then search for it.  
+
+### **Step 1: Start a Background Process**  
+```bash
+sleep 500 &
+```
+This will:  
+- Start the `sleep` command, which will **run in the background for 500 seconds**.  
+- The `&` at the end ensures the command **runs in the background**.  
+
+Now, let’s learn how to find this process.  
 
 ---
 
@@ -24,27 +40,27 @@ Let’s start with `pidof`.
 ### **What is `pidof`?**  
 The `pidof` command is used to **quickly find the PID of a running process** by its name.  
 
-### **Basic Usage**
+### **Basic Usage**  
 ```bash
-pidof apache2
+pidof sleep
 ```
-✅ **Example Output:**
+**Example Output:**  
 ```
 1234
 ```
-This means that the **Apache web server is running**, and its **Process ID is 1234**.  
+This means that the **`sleep` process is running**, and its **Process ID is 1234**.  
 
 If multiple instances of the process are running, `pidof` will return multiple PIDs:  
 ```bash
 pidof python3
 ```
-✅ **Example Output:**  
+**Example Output:**  
 ```
 5678 9101 1121
 ```
-Here, three instances of Python are running with different PIDs.  
+Here, three instances of **Python** are running with different PIDs.  
 
-Now that we understand `pidof`, let’s learn how to **search for processes more effectively** with `pgrep`.  
+Now that we understand `pidof`, let’s explore how `pgrep` provides more control over **process searching**.  
 
 ---
 
@@ -53,65 +69,67 @@ Now that we understand `pidof`, let’s learn how to **search for processes more
 ### **What is `pgrep`?**  
 Unlike `pidof`, which **only returns the PID**, `pgrep` provides **more flexibility**, allowing you to search for processes based on **name, user, or even partial matches**.  
 
-### **Basic Usage**
+### **Basic Usage**  
 ```bash
-pgrep ssh
+pgrep sleep
 ```
-✅ **Example Output:**  
+**Example Output:**  
 ```
-2345
+1234
 ```
-This means that **SSH is running**, and its PID is `2345`.  
+This confirms that the `sleep` process is running with PID `1234`.  
 
 If multiple instances of the process exist, `pgrep` will return multiple PIDs:  
 ```bash
-pgrep nginx
+pgrep -l sleep
 ```
-✅ **Example Output:**  
+**Example Output:**  
 ```
-3456
-7890
+1234 sleep
+5678 sleep
 ```
-This means that two **nginx** worker processes are running.  
+Now, let’s see how to **filter results using additional options**.  
 
-### **Filtering Results with `pgrep`**  
+---
+
+## **Filtering Results with `pgrep`**  
 
 1. **Show Process Name Along with PID**  
 ```bash
-pgrep -l ssh
+pgrep -l sleep
 ```
-✅ **Example Output:**  
+**Example Output:**  
 ```
-2345 sshd
+1234 sleep
 ```
 Now, the output includes the **process name** along with the **PID**.  
 
 2. **Find Processes Running Under a Specific User**  
 ```bash
-pgrep -u devops nginx
+pgrep -u devops sleep
 ```
-This command **only shows nginx processes started by the `devops` user**.  
+This command **only shows `sleep` processes started by the `devops` user**.  
 
 3. **Find Exact Process Matches**  
 By default, `pgrep` matches **partial names**. To avoid this, use:  
 ```bash
-pgrep -x apache2
+pgrep -x sleep
 ```
-This ensures that only **apache2** processes (and not similar names) are shown.  
+This ensures that only **sleep** processes (and not similar names) are shown.  
 
 Now that we understand both `pidof` and `pgrep`, let’s compare when to use each.  
 
 ---
 
-## **`pidof` vs `pgrep`: When to Use Which?**  
+## **Comparing `pidof` vs `pgrep`**  
 
 | Feature | `pidof` | `pgrep` |
 |---------|--------|---------|
-| Finds PID of a process | ✅ | ✅ |
-| Works with exact process names | ✅ | ✅ (with `-x`) |
-| Supports filtering by user | ❌ | ✅ |
-| Can display process names | ❌ | ✅ (`-l` option) |
-| Supports regular expressions | ❌ | ✅ |
+| Finds PID of a process | Yes | Yes |
+| Works with exact process names | Yes | Yes (with `-x`) |
+| Supports filtering by user | No | Yes |
+| Can display process names | No | Yes (`-l` option) |
+| Supports regular expressions | No | Yes |
 
 ### **When to Use `pidof`?**  
 - When you **only need the PID** of a specific process.  
@@ -137,11 +155,29 @@ Now, let’s move on to troubleshooting common issues.
 
 ---
 
+## **Stopping the Background Process**  
+
+Now that we have found our process, let’s stop it using its PID.  
+
+### **Step 1: Kill the Process Using `kill`**  
+```bash
+kill 1234
+```
+This command sends a termination signal (`SIGTERM`) to the process, stopping it.  
+
+### **Step 2: Verify the Process is Stopped**  
+```bash
+ps -ef | grep sleep
+```
+If the process does not appear, it has been successfully stopped.  
+
+---
+
 ## **Hands-On Challenges**  
 
 Try the following exercises on your system:  
 
-1. Find the **PID of the Apache web server** using `pidof`.  
+1. Start the **Apache or Nginx web server** and find its **PID using `pidof`**.  
 2. Use `pgrep` to list **all running SSH processes with their names**.  
 3. Find all **nginx processes running under the root user**.  
 4. Compare the output of `pidof apache2` and `pgrep apache2`.  
@@ -154,7 +190,7 @@ Try the following exercises on your system:
 - The **`pidof` command** finds the **Process ID (PID)** of a running program.  
 - The **`pgrep` command** searches for processes based on **name, user, or partial matches**.  
 - `pgrep` is **more flexible than `pidof`** because it allows **advanced filtering** and **displays process names**.  
-- These commands are **essential for DevOps and Cloud Engineers** when managing **web servers, background services, and automation scripts**.  
+- These commands are essential for **DevOps and Cloud Engineers** when managing **web servers, background services, and automation scripts**.  
 
 ---
 
