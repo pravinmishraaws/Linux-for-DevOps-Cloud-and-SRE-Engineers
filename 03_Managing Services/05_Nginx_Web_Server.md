@@ -1,77 +1,66 @@
-# **Nginx Web Server: Installation, Configuration, and Advanced Features**  
+# **Nginx Web Server: Installation, Configuration, and Advanced Features**
 
-## **Why Should DevOps and Cloud Engineers Learn Nginx?**  
+## **Why Should DevOps and Cloud Engineers Learn Nginx?**
 
-Imagine you are a **DevOps Engineer** managing a high-traffic web application. Your team complains that the website **slows down under heavy load**. You need a **high-performance, lightweight** web server to optimize response times.  
+Imagine you are a **DevOps Engineer** managing the deployment of **The EpicBook!**, an online bookstore. Your team notices that under **high traffic conditions**, the website slows down. Users **experience delays** in browsing books and adding items to their carts.
 
-Or, as a **Cloud Engineer**, you need to **distribute traffic efficiently** across multiple backend servers to ensure **high availability**.  
+Or, as a **Cloud Engineer**, you are responsible for **scaling the infrastructure** and ensuring **zero downtime**. You need to **distribute user requests across multiple servers**, improving **availability and performance**.
 
-This is where **Nginx** comes in.  
+This is where **Nginx** comes in.
 
-By the end of this lesson, you will be able to:  
+By the end of this lesson, you will be able to:
 ✔ **Understand how Nginx works and why it is different from Apache.**  
 ✔ **Install and configure Nginx on Ubuntu/Debian and CentOS/RHEL.**  
-✔ **Set up virtual hosts (server blocks) to host multiple websites.**  
-✔ **Configure Nginx as a reverse proxy and load balancer.**  
-✔ **Secure Nginx with HTTPS and IP whitelisting.**  
+✔ **Set up server blocks (virtual hosts) for multiple applications.**  
+✔ **Configure Nginx as a reverse proxy and load balancer for The EpicBook! backend.**  
+✔ **Secure Nginx with HTTPS and IP whitelisting.**
 
-Let’s begin by understanding **what Nginx is and why it is widely used**.  
-
----
-
-## **1. Introduction to Nginx**  
-
-Nginx (pronounced "Engine-X") is a **high-performance, lightweight web server** and **reverse proxy**. Unlike Apache, which uses a process-driven model, Nginx uses an **event-driven, asynchronous architecture**, allowing it to:  
-
-- **Handle thousands of connections simultaneously** with minimal memory usage.  
-- **Efficiently serve static files** like images, CSS, and JavaScript.  
-- **Act as a reverse proxy** for backend applications like **Node.js, Python, or PHP**.  
-- **Load balance traffic** across multiple servers.  
-
-### **Key Features of Nginx**  
-
-| Feature | Description |
-|---------|------------|
-| **High Concurrency** | Handles multiple client requests simultaneously. |
-| **Event-Driven Architecture** | Uses a non-blocking I/O model for scalability. |
-| **Low Memory Usage** | Requires fewer resources compared to Apache. |
-| **Reverse Proxy & Load Balancing** | Distributes traffic across multiple backend servers. |
-| **HTTP/2 & SSL/TLS Support** | Ensures secure and optimized connections. |
-
-Now that we understand what Nginx does, let’s explore its architecture.  
+Let’s begin by understanding **how Nginx handles web traffic differently from Apache**.
 
 ---
 
-## **2. Nginx Architecture**  
+## **1. What is Nginx and Why is it Different from Apache?**
 
-Nginx follows a **master-worker architecture**, allowing it to efficiently manage connections.  
+Nginx (pronounced "Engine-X") is a **high-performance, lightweight web server** and **reverse proxy**. Unlike Apache, which follows a **process-driven model**, Nginx uses an **event-driven, asynchronous architecture**, which allows it to:
 
-| Component | Description |
-|-----------|------------|
-| **Master Process** | Reads configuration files and manages worker processes. |
-| **Worker Processes** | Handle client requests asynchronously using event-driven I/O. |
-
-This design ensures **high performance and scalability**, even under **heavy loads**.  
-
-Now, let’s install Nginx on different Linux distributions.  
+- **Handle thousands of simultaneous connections** efficiently.  
+- **Optimize static content delivery** (e.g., images, CSS, JavaScript).  
+- **Act as a reverse proxy** to distribute requests to backend services (e.g., Node.js).  
+- **Load balance traffic** across multiple servers.
 
 ---
 
-## **3. Installing Nginx**  
+## **2. Real-World Use Case: Hosting The EpicBook! with Nginx**
 
-### **On Ubuntu/Debian**  
+For **The EpicBook!**, we need to host **two separate applications**:
 
-#### **Step 1: Update the Package List**  
+| Application | URL | Purpose |
+|------------|-----------------------------|------------------------------|
+| **Main Bookstore** | `http://theepicbooks.com` | Serves the frontend bookstore (static website) |
+| **Backend API** | `http://api.theepicbooks.com` | Handles book listings, user accounts, and orders (Node.js + MySQL) |
+
+Nginx will be used to:
+✔ **Serve static assets for the frontend**  
+✔ **Proxy requests to the backend API**  
+✔ **Load balance traffic for high availability**  
+
+---
+
+## **3. Installing Nginx**
+
+### **On Ubuntu/Debian**
+
+#### **Step 1: Update the Package List**
 ```bash
 sudo apt update
 ```
 
-#### **Step 2: Install Nginx**  
+#### **Step 2: Install Nginx**
 ```bash
 sudo apt install nginx -y
 ```
 
-#### **Step 3: Start and Enable Nginx**  
+#### **Step 3: Start and Enable Nginx**
 ```bash
 sudo systemctl start nginx
 sudo systemctl enable nginx
@@ -84,14 +73,14 @@ systemctl status nginx
 
 ---
 
-### **On CentOS/RHEL**  
+### **On CentOS/RHEL**
 
-#### **Step 1: Install Nginx**  
+#### **Step 1: Install Nginx**
 ```bash
 sudo yum install nginx -y
 ```
 
-#### **Step 2: Start and Enable Nginx**  
+#### **Step 2: Start and Enable Nginx**
 ```bash
 sudo systemctl start nginx
 sudo systemctl enable nginx
@@ -102,98 +91,84 @@ sudo systemctl enable nginx
 systemctl status nginx
 ```
 
-Now that Nginx is installed, let’s explore its **configuration files**.  
+Now that Nginx is installed, let’s explore **its configuration files**.
 
 ---
 
-## **4. Nginx Configuration Basics**  
-
-Nginx configuration files control **global settings, server blocks, and logging**.  
+## **4. Nginx Configuration Basics**
 
 | File Type | Location |
-|-----------|---------|
+|-----------|----------------------------|
 | **Main Configuration File** | `/etc/nginx/nginx.conf` |
-| **Server Block Files (Virtual Hosts)** | `/etc/nginx/sites-available/` and `/etc/nginx/sites-enabled/` |
+| **Server Blocks (Virtual Hosts)** | `/etc/nginx/sites-available/` and `/etc/nginx/sites-enabled/` |
 | **Access Log** | `/var/log/nginx/access.log` |
 | **Error Log** | `/var/log/nginx/error.log` |
 
-Now, let’s configure **server blocks** to host multiple websites.  
+Now, let’s configure **server blocks** to serve **The EpicBook!** and its backend.
 
 ---
 
-## **5. Setting Up Virtual Hosts (Server Blocks)**  
+## **5. Setting Up Server Blocks (Virtual Hosts)**
 
-### **Why Use Server Blocks?**  
-- Allows Nginx to **host multiple websites** on a single server.  
-- Separates **configuration settings** for different domains.  
+### **Why Use Server Blocks?**
+Nginx **server blocks** allow us to:
+- Host **multiple applications** on the same server.
+- Assign **separate domains** to different components of The EpicBook!.
+- Apply **different configurations** for frontend and backend services.
 
 ---
 
-### **Step 1: Create a Website Directory**  
+### **Step 1: Create Directories for The EpicBook!**
 ```bash
-sudo mkdir -p /var/www/example.com/html
-sudo chmod -R 755 /var/www/example.com
+sudo mkdir -p /var/www/theepicbooks.com/html
+sudo mkdir -p /var/www/api.theepicbooks.com/html
+sudo chmod -R 755 /var/www/theepicbooks.com
+sudo chmod -R 755 /var/www/api.theepicbooks.com
 ```
 
 ---
 
-### **Step 2: Add a Test File**  
+### **Step 2: Add Test Files for Both Applications**
+
+#### **Main Bookstore**
 ```bash
-echo "Welcome to Example.com!" | sudo tee /var/www/example.com/html/index.html
+echo "Welcome to The EpicBook!" | sudo tee /var/www/theepicbooks.com/html/index.html
+```
+
+#### **Backend API**
+```bash
+echo "The EpicBook API is running!" | sudo tee /var/www/api.theepicbooks.com/html/index.html
 ```
 
 ---
 
-### **Step 3: Create a Server Block Configuration File**  
-```bash
-sudo nano /etc/nginx/sites-available/example.com
-```
-Add the following configuration:  
+### **Step 3: Create Server Block Configurations**
 
+#### **Main Bookstore (theepicbooks.com)**
+```bash
+sudo nano /etc/nginx/sites-available/theepicbooks.com
+```
 ```nginx
 server {
     listen 80;
-    server_name example.com www.example.com;
-    root /var/www/example.com/html;
+    server_name theepicbooks.com www.theepicbooks.com;
+    root /var/www/theepicbooks.com/html;
     index index.html;
 }
 ```
 
 ---
 
-### **Step 4: Enable the Server Block**  
+#### **Backend API (api.theepicbooks.com)**
 ```bash
-sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
-sudo systemctl reload nginx
+sudo nano /etc/nginx/sites-available/api.theepicbooks.com
 ```
-
-✅ **Test the Configuration:**  
-```bash
-sudo nginx -t
-```
-If the configuration is valid, **visit `http://example.com`** in your browser.  
-
-Now, let’s explore how Nginx works as a **reverse proxy**.  
-
----
-
-## **6. Configuring Nginx as a Reverse Proxy**  
-
-A **reverse proxy** forwards client requests to **backend servers** running on different ports or machines.  
-
-### **Step 1: Create a Reverse Proxy Configuration**  
-```bash
-sudo nano /etc/nginx/sites-available/reverse-proxy.conf
-```
-Add the following configuration:  
-
 ```nginx
 server {
     listen 80;
-    server_name example.com;
-
+    server_name api.theepicbooks.com;
     location / {
-        proxy_pass http://127.0.0.1:8080;
+        proxy_pass http://127.0.0.1:5000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -203,26 +178,30 @@ server {
 
 ---
 
-### **Step 2: Enable the Reverse Proxy Configuration**  
+### **Step 4: Enable Server Blocks and Restart Nginx**
 ```bash
-sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/theepicbooks.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/api.theepicbooks.com /etc/nginx/sites-enabled/
 sudo systemctl reload nginx
 ```
 
-Now, let’s set up **Nginx as a load balancer**.  
+✅ **Visit The EpicBook! in your browser:**
+```
+http://theepicbooks.com
+http://api.theepicbooks.com
+```
+
+Now, let’s set up **Nginx as a load balancer** for scalability.
 
 ---
 
-## **7. Load Balancing with Nginx**  
+## **6. Load Balancing The EpicBook! API**
 
-Nginx can distribute incoming traffic across **multiple backend servers** to improve performance and availability.  
+If The EpicBook! API runs on multiple servers, we can distribute traffic evenly.
 
-### **Step 1: Create a Load Balancer Configuration**  
 ```bash
 sudo nano /etc/nginx/sites-available/load-balancer.conf
 ```
-Add the following configuration:  
-
 ```nginx
 upstream backend_servers {
     server 192.168.1.101;
@@ -231,7 +210,7 @@ upstream backend_servers {
 
 server {
     listen 80;
-    server_name example.com;
+    server_name api.theepicbooks.com;
 
     location / {
         proxy_pass http://backend_servers;
@@ -242,56 +221,38 @@ server {
 }
 ```
 
-### **Step 2: Enable and Reload Nginx**  
-```bash
-sudo ln -s /etc/nginx/sites-available/load-balancer.conf /etc/nginx/sites-enabled/
-sudo systemctl reload nginx
-```
-
-Now, let’s secure Nginx with **HTTPS and access control**.  
-
 ---
 
-## **8. Securing Nginx**  
+## **7. Securing Nginx with HTTPS (Let’s Encrypt)**
 
-### **Enable HTTPS with Certbot (Let’s Encrypt)**  
+### **Enable SSL with Certbot**
 ```bash
 sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d example.com -d www.example.com
+sudo certbot --nginx -d theepicbooks.com -d api.theepicbooks.com
 ```
-✅ **Verify SSL Renewal:**  
+
+✅ **Verify SSL Renewal**
 ```bash
 sudo certbot renew --dry-run
 ```
 
 ---
 
-### **Restrict Access with IP Whitelisting**  
-```nginx
-location / {
-    allow 192.168.1.100;
-    deny all;
-}
-```
+## **Key Takeaways**
+
+- Nginx is **lightweight, scalable, and optimized for high traffic**.
+- Server blocks allow **hosting multiple websites**.
+- Nginx can function as a **reverse proxy and load balancer**.
+- SSL encryption ensures **secure communication**.
 
 ---
 
-## **Key Takeaways**  
+## **What’s Next?**
 
-- Nginx is **high-performance, lightweight, and scalable**.  
-- It uses an **event-driven architecture** for handling multiple connections.  
-- Server blocks allow **hosting multiple websites on one server**.  
-- Nginx can function as a **reverse proxy and load balancer**.  
-- **SSL/TLS encryption** secures websites with HTTPS.  
-
----
-
-## **What’s Next?**  
-
-Now that you understand **Nginx**, the next step is:  
+Now that you understand **Nginx**, the next step is:
 
 - **Optimizing Nginx for performance and security.**  
-- **Handling traffic spikes and implementing caching strategies.**  
-- **Monitoring and troubleshooting Nginx logs.**  
+- **Handling caching and implementing rate limiting.**  
+- **Monitoring and troubleshooting Nginx logs.**
 
 Let’s move forward and **apply these concepts in real-world deployments!**
