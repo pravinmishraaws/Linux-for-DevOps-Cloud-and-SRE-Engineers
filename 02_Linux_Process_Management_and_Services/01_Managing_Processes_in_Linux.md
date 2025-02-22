@@ -132,6 +132,54 @@ fg %1
 ```
 The `%1` refers to **job number 1**.  
 
+## Practicle example
+
+### When to use `bg`
+- Suppose you're running a long command in the terminal, like `ping google.com`, and you realize you need to use the terminal for something else.
+- Instead of killing the process with `Ctrl + C`, you pause it with `Ctrl + Z`. This stops the process temporarily.
+- Now, if you want to **resume** the process but keep it running **in the background** so you can continue using the terminal, you use:
+
+  ```sh
+  bg
+  ```
+
+### Example:
+1. Start a long-running process:
+   ```sh
+   ping google.com
+   ```
+2. Pause it using:
+   ```
+   Ctrl + Z
+   ```
+   - The process stops, and you see output like:
+     ```
+     [1]+  Stopped                 ping google.com
+     ```
+3. Send it to the background:
+   ```sh
+   bg
+   ```
+   - Now, the process is running in the background, and you can continue using the terminal.
+   - You might see output like:
+     ```
+     [1]+ ping google.com &
+     ```
+
+### How to see background processes?
+Use:
+```sh
+jobs
+```
+It will show running background processes.
+
+### How to bring a background process back to the foreground?
+Use:
+```sh
+fg
+```
+This will bring the last background process to the foreground.
+
 Now that we understand foreground and background processes, let’s go into more detail and see how we can list and analyze all running processes using the `ps` command.  
 
 ---
