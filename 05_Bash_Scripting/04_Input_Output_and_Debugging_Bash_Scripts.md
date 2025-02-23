@@ -274,4 +274,4 @@ Now that you can **handle input, manage output, and debug scripts**, the next st
 - **Automating backups and log rotation.**  
 - **Using Bash to manage system files effectively.**  
 
-Let’s move forward and explore **File and Directory Management in Lesson 5**.
+Let’s move forward and explore **Working with Environment Variables in Lesson 5**.
