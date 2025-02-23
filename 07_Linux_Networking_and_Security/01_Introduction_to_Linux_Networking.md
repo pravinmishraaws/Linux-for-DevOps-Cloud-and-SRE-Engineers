@@ -197,4 +197,3 @@ Now that we understand **networking basics**, the next step is to:
 
 ✔ **Configure network interfaces** to ensure the Mini Finance website has a **static IP** and remains accessible after reboots.  
 
-Let’s move to **Lesson 2: Configuring Network Interfaces**.  
