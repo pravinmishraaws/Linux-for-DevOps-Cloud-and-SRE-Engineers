@@ -1,0 +1,1 @@
+Introduces tools like ping, traceroute, netstat, ss, and debugging connectivity.

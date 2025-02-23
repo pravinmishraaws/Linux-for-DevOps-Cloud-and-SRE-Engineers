@@ -1,0 +1,1 @@
+Covers setting temporary vs. persistent IP configurations and configuring interfaces via netplan or /etc/network/interfaces.	Includes static IP assignment on an Azure VM, handling DHCP vs. static IP f 
