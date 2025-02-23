@@ -249,4 +249,4 @@ Now that the **Mini Finance web server is secured and stable**, the next step is
 
 ✔ **Logging and Monitoring Network Activity** to detect security threats and performance issues.  
 
-Let’s move to **Lesson 5: Logging and Monitoring Network Traffic in Linux**.  
+Let’s move to **Securing Root Access & SSH in Linux**.  
