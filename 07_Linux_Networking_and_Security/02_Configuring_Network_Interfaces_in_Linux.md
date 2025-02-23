@@ -1,3 +1,14 @@
+# Configuring Network Interfaces in Linux (Mini Finance Web Server)
+
+In Lesson 1, we learned how to view network configurations and diagnose connectivity issues for our Mini Finance web server hosted on an Azure Virtual Machine. However, we identified a critical problem—our public IP keeps changing every time the VM restarts.
+
+To ensure Mini Finance remains accessible, we need to:
+✔ Assign a static private IP for internal communication.
+✔ Configure a static public IP in Azure to avoid frequent changes.
+✔ Ensure network settings persist across reboots.
+
+
+
 ## **1. Why Do Network Interfaces Matter?**  
 
 ### **Real-World Problem Statement**  
