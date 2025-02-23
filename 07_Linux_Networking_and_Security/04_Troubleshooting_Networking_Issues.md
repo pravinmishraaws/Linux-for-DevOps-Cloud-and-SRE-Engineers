@@ -1,258 +1,252 @@
-### Firewall Management in Linux (Securing the Mini Finance Web Server)**  
+### **Troubleshooting Network Issues in Linux (Ensuring Mini Finance Availability)**  
 
-#### **Building Upon the Previous Lesson**  
+---
 
-In **Lesson 2**, we successfully assigned **static private and public IPs** to our **Mini Finance web server** running on an **Azure VM**. Now, the website remains accessible even after VM reboots.  
+## **Building Upon the Previous Lesson**  
 
-However, having an **exposed public IP** poses a **security risk**. Malicious users can:  
-- **Scan open ports** to exploit vulnerabilities.  
-- **Attempt brute-force SSH attacks** to gain unauthorized access.  
-- **Send malicious requests** to bring down our website.  
+In **Lesson 3**, we secured the **Mini Finance web server** by:  
+- **Configuring UFW** to allow only SSH, HTTP, and HTTPS.  
+- **Preventing brute-force attacks** with Fail2Ban.  
+- **Restricting SSH access** to specific IPs.  
 
-### **Why Do We Need a Firewall?**  
-A **firewall** controls which incoming and outgoing connections are **allowed** or **blocked**, protecting the server from **unauthorized access and attacks**.  
+Now, imagine this scenario:  
+
+Your team reports that the **Mini Finance website is down**. Users are unable to access it. You need to **quickly diagnose and fix the issue**.  
+
+### **Why is Network Troubleshooting Important?**  
+As a **DevOps or Cloud Engineer**, you need to:  
+✔ **Identify connectivity issues** when applications fail.  
+✔ **Check network configurations** and ensure proper routing.  
+✔ **Diagnose and resolve DNS and firewall-related problems.**  
 
 By the end of this lesson, you will be able to:  
-
-✔ **Set up and configure a firewall using UFW (Uncomplicated Firewall).**  
-✔ **Allow only necessary services (HTTP, HTTPS, and SSH) while blocking all others.**  
-✔ **Prevent brute-force SSH attacks using fail2ban.**  
-✔ **Ensure Mini Finance remains secure while accessible to legitimate users.**  
+✔ **Use Linux commands to diagnose network problems.**  
+✔ **Fix connectivity, firewall, and DNS issues.**  
+✔ **Ensure Mini Finance remains accessible.**  
 
 ---
 
-## **1. Understanding Firewalls in Linux**  
+## **1. Understanding Common Network Issues**  
 
-A **firewall** filters **incoming and outgoing traffic** based on **predefined rules**. In Linux, we typically use:  
+When troubleshooting, always ask:  
 
-| **Firewall Tool** | **Description** |
-|------------------|----------------|
-| **UFW (Uncomplicated Firewall)** | A user-friendly interface for iptables. Recommended for most use cases. |
-| **iptables** | A powerful but complex firewall tool for fine-grained rule customization. |
-| **firewalld** | Default firewall manager in RHEL/CentOS. |
+- **Is the server accessible?** (Check connectivity)  
+- **Are the required ports open?** (Check firewall rules)  
+- **Is the domain resolving properly?** (Check DNS)  
+- **Are external services reachable?** (Check routing)  
 
-For this lesson, we will use **UFW**, as it simplifies firewall management while offering robust security.
+| **Issue Type** | **Possible Causes** |
+|--------------|--------------------|
+| **Server Unreachable** | Network interface down, incorrect IP configuration. |
+| **Website Not Loading** | Web server crash, firewall blocking traffic. |
+| **DNS Resolution Issues** | Incorrect DNS records, external DNS issues. |
+| **Slow Network Performance** | High bandwidth usage, packet loss. |
 
 ---
 
-## **2. Checking the Current Firewall Status**  
+## **2. Checking Basic Connectivity**  
 
-Before making changes, check if UFW is installed and running.  
+Before debugging, confirm that the server is **reachable**.
 
+### **Step 1: Check Network Interface**  
 ```bash
-sudo ufw status
+ip a
 ```
 Expected Output:
 ```
-Status: inactive
+2: eth0: <UP,BROADCAST,RUNNING,MULTICAST> mtu 1500
+    inet 20.199.1.55/24 brd 20.199.1.255 scope global dynamic eth0
 ```
-If it’s inactive, we need to **enable and configure it**.
+- Ensure the interface is **UP**.  
+- The **public IP (20.199.1.55)** should match your Mini Finance VM.  
+
+If missing, restart the network interface:  
+```bash
+sudo systemctl restart networking
+```
 
 ---
 
-## **3. Allowing Essential Services**  
-
-Since we are running a **public-facing web server**, we must allow only:  
-
-✔ **SSH (Port 22)** – For remote access.  
-✔ **HTTP (Port 80)** – To serve Mini Finance over HTTP.  
-✔ **HTTPS (Port 443)** – For secure connections.  
-
-### **Step 1: Enable UFW**  
+### **Step 2: Check Server’s Reachability with Ping**  
 ```bash
-sudo ufw enable
+ping -c 4 google.com
 ```
-
-### **Step 2: Allow Necessary Ports**  
-```bash
-sudo ufw allow 22/tcp   # Allow SSH
-sudo ufw allow 80/tcp   # Allow HTTP
-sudo ufw allow 443/tcp  # Allow HTTPS
+Expected Output:
 ```
-
-### **Step 3: Deny All Other Incoming Traffic**  
-```bash
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
+64 bytes from 142.250.72.78: icmp_seq=1 ttl=113 time=20.3 ms
 ```
+If ping fails:  
+- The server **may not have internet access**.  
+- **Check the default gateway**:  
+  ```bash
+  ip route
+  ```
+- Restart the network service:  
+  ```bash
+  sudo systemctl restart networking
+  ```
 
-### **Step 4: Check Firewall Rules**  
+---
+
+## **3. Checking Firewall Rules (UFW)**  
+
+If the Mini Finance website is **not accessible**, check if the firewall is blocking traffic.  
+
+### **Step 1: Check Open Ports**  
 ```bash
 sudo ufw status verbose
 ```
 Expected Output:
 ```
-Status: active
 To                         Action      From
 --                         ------      ----
-22/tcp                     ALLOW       Anywhere
+22/tcp                     ALLOW       192.168.1.100
 80/tcp                     ALLOW       Anywhere
 443/tcp                    ALLOW       Anywhere
-Anywhere                   DENY        Anywhere (incoming)
 ```
-This means:  
-- **SSH, HTTP, and HTTPS traffic is allowed.**  
-- **All other incoming connections are blocked.**  
+- If **port 80 or 443 is missing**, allow them:  
+  ```bash
+  sudo ufw allow 80/tcp
+  sudo ufw allow 443/tcp
+  sudo systemctl restart ufw
+  ```
+- If **SSH is blocked**, re-enable it:  
+  ```bash
+  sudo ufw allow 22/tcp
+  ```
 
 ---
 
-## **4. Securing SSH Access (Preventing Unauthorized Logins)**  
+## **4. Checking Web Server Status**  
 
-By default, SSH is **open to everyone**, making it vulnerable to **brute-force attacks**. To prevent unauthorized access:  
+If firewall rules are correct but Mini Finance **still doesn’t load**, check if **Nginx is running**.
 
-### **Step 1: Limit SSH Access to a Specific IP**  
-If you connect from a **fixed IP**, restrict SSH access:  
+### **Step 1: Check Nginx Service**  
 ```bash
-sudo ufw allow from <your-ip> to any port 22
+sudo systemctl status nginx
 ```
-For example, to allow SSH only from **192.168.1.100**:  
+Expected Output (if running):  
+```
+● nginx.service - A high performance web server
+   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2025-02-23 10:30:12 UTC
+```
+If Nginx is **not running**, restart it:  
 ```bash
-sudo ufw allow from 192.168.1.100 to any port 22
+sudo systemctl restart nginx
 ```
 
-### **Step 2: Change the Default SSH Port**  
-Modify the SSH configuration file:  
+---
+
+## **5. Checking DNS Resolution Issues**  
+
+If Mini Finance is accessible via **IP** but not via **domain name**, the issue may be **DNS-related**.
+
+### **Step 1: Check DNS Resolution**  
 ```bash
-sudo vi /etc/ssh/sshd_config
+nslookup mini-finance.com
 ```
-Find this line:
+Expected Output:
 ```
-#Port 22
+Server:         8.8.8.8
+Address:        8.8.8.8#53
+Non-authoritative answer:
+Name:   mini-finance.com
+Address: 20.199.1.55
 ```
-Change it to a custom port (e.g., 2222):  
-```
-Port 2222
-```
-Restart SSH for changes to take effect:  
+- If the **IP doesn’t match the Azure VM**, check DNS settings in the **domain registrar**.
+- If DNS is misconfigured, update the correct IP.
+
+### **Step 2: Flush the DNS Cache**  
 ```bash
-sudo systemctl restart sshd
+sudo systemd-resolve --flush-caches
 ```
-Now, allow the new port in UFW:  
+
+---
+
+## **6. Checking External Connectivity Issues**  
+
+If Mini Finance depends on **external APIs or services**, test their availability.
+
+### **Step 1: Check if an API is Reachable**  
 ```bash
-sudo ufw allow 2222/tcp
-sudo ufw delete allow 22/tcp
+curl -I https://api.paymentgateway.com
 ```
-Verify the firewall status:  
+Expected Output:
+```
+HTTP/2 200
+content-type: application/json
+```
+If this fails:  
+- The **external API may be down**.  
+- Check firewall egress rules:
+  ```bash
+  sudo ufw status
+  ```
+- Check outbound connectivity:  
+  ```bash
+  traceroute api.paymentgateway.com
+  ```
+
+---
+
+## **7. Monitoring Network Traffic (Optional for Advanced Debugging)**  
+
+If the issue is **intermittent**, monitor real-time network traffic.
+
+### **Step 1: Install Tcpdump**  
+```bash
+sudo apt install tcpdump -y
+```
+
+### **Step 2: Capture HTTP Traffic**  
+```bash
+sudo tcpdump -i eth0 port 80 -nn -A
+```
+- This helps debug incoming **requests to Mini Finance**.
+- If no requests appear, users are not reaching the server.
+
+---
+
+## **8. Hands-On Challenge**  
+
+1. **Check if the Mini Finance VM has internet access.**  
+```bash
+ping -c 4 google.com
+```
+2. **Verify that firewall rules allow HTTP/HTTPS.**  
 ```bash
 sudo ufw status
 ```
-
----
-
-## **5. Protecting Against Brute-Force Attacks with Fail2Ban**  
-
-Even with firewall rules, **attackers may repeatedly try logging in** using different passwords. To prevent this, we install **fail2ban**, which **blocks IPs after multiple failed login attempts**.
-
-### **Step 1: Install Fail2Ban**  
+3. **Restart Nginx if the website is not loading.**  
 ```bash
-sudo apt install fail2ban -y
+sudo systemctl restart nginx
 ```
-
-### **Step 2: Configure SSH Protection**  
+4. **Check if Mini Finance is accessible via its domain name.**  
 ```bash
-sudo vi /etc/fail2ban/jail.local
+nslookup mini-finance.com
 ```
-Add the following:  
-```
-[sshd]
-enabled = true
-maxretry = 3
-bantime = 600
-```
-- **maxretry = 3** → Blocks IP after **3 failed login attempts**.  
-- **bantime = 600** → Blocks the attacker for **10 minutes**.  
-
-### **Step 3: Restart Fail2Ban**  
+5. **Run a network packet capture to debug intermittent issues.**  
 ```bash
-sudo systemctl restart fail2ban
-```
-
-### **Step 4: Check Banned IPs**  
-```bash
-sudo fail2ban-client status sshd
-```
-
-Expected Output:
-```
-Status for the jail: sshd
-|- Number of failed attempts: 5
-`- Currently banned IPs: 192.168.1.200
-```
-This confirms that Fail2Ban is **actively blocking unauthorized SSH login attempts**.
-
----
-
-## **6. Testing the Firewall Setup**  
-
-After configuring **UFW and Fail2Ban**, test the security setup:
-
-### **Test 1: Verify Open Ports**  
-From another machine, check open ports:  
-```bash
-nmap -p 22,80,443 <your-server-ip>
-```
-Expected Output:
-```
-22/tcp  open   ssh
-80/tcp  open   http
-443/tcp open   https
-```
-All other ports should be **closed**.
-
-### **Test 2: Attempt SSH Brute-Force Attack**  
-Simulate multiple failed SSH login attempts:  
-```bash
-ssh wronguser@your-server-ip
-ssh wronguser@your-server-ip
-ssh wronguser@your-server-ip
-```
-After three attempts, check if your IP is banned:  
-```bash
-sudo fail2ban-client status sshd
-```
-
----
-
-## **7. Hands-On Challenge**  
-
-1. **Enable UFW and configure rules for Mini Finance.**  
-```bash
-sudo ufw enable
-sudo ufw allow 22/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw default deny incoming
-```
-2. **Restrict SSH access to your IP only.**  
-```bash
-sudo ufw allow from <your-ip> to any port 22
-```
-3. **Install and configure Fail2Ban to protect SSH.**  
-```bash
-sudo apt install fail2ban -y
-sudo vi /etc/fail2ban/jail.local
-```
-4. **Restart services and test security settings.**  
-```bash
-sudo systemctl restart fail2ban
-sudo ufw status verbose
+sudo tcpdump -i eth0 port 80 -nn -A
 ```
 
 ---
 
 ## **Key Takeaways**  
 
-✔ **Firewalls restrict access to only necessary services** (SSH, HTTP, HTTPS).  
-✔ **Fail2Ban prevents brute-force attacks** by blocking IPs with failed login attempts.  
-✔ **Changing the default SSH port enhances security** against automated attacks.  
-✔ **UFW simplifies firewall management** while providing robust protection.  
+✔ **Network troubleshooting is critical to maintaining uptime for production applications.**  
+✔ **Start by checking connectivity (IP address, firewall, DNS).**  
+✔ **Verify that the web server (Nginx) is running correctly.**  
+✔ **Use nslookup to diagnose DNS resolution issues.**  
+✔ **Monitor network traffic using tcpdump for deeper debugging.**  
 
 ---
 
 ## **What’s Next?**  
 
-Now that the **Mini Finance web server** is **secure from unauthorized access**, the next step is:  
+Now that the **Mini Finance web server is secured and stable**, the next step is:  
 
-✔ **Troubleshooting network issues** to ensure smooth server operation.  
+✔ **Logging and Monitoring Network Activity** to detect security threats and performance issues.  
 
-Let’s move to **Lesson 4: Troubleshooting Network Issues in Linux**.  
+Let’s move to **Lesson 5: Logging and Monitoring Network Traffic in Linux**.  
