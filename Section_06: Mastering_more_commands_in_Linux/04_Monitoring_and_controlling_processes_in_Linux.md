@@ -166,4 +166,4 @@ This reveals whether `nginx` has child processes.
 ---
 
 ## **Next Steps**
-Now that you understand **monitoring and controlling processes in Linux**, the next lesson will cover **system information commands**.
+Now that you understand **monitoring and controlling processes in Linux**, the next lesson will cover **Understanding networking commands in Linux**.
