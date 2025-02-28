@@ -104,10 +104,12 @@ systemctl is-enabled nginx
 Instead of creating a website from scratch, we will use a **ready-made static website template**.
 
 ### Steps to Download a Template
-1. Visit a free **website template provider**.
+1. Visit a free **[website template provider](https://www.tooplate.com/)**.
 2. Select a preferred template.
 3. Download the **ZIP file** to your local computer.
 4. Extract the ZIP file to access the website files.
+
+Mini Finance download link **[here]**(https://www.tooplate.com/download/2135_mini_finance).
 
 ### Moving the Website to the Nginx Web Server
 Once downloaded, we need to transfer these files to our **Linux EC2 instance**, placing them inside the Nginx web server directory.
