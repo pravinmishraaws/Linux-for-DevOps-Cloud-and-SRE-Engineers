@@ -36,10 +36,10 @@ ps [options]
 ps -e
 ```
 This displays every running process along with:
-- **PID** (Process ID)
-- **TTY** (Terminal type)
-- **TIME** (CPU time used)
-- **CMD** (Command that started the process)
+- **PID** (Process ID)— A unique number assigned by the operating system to identify the process.
+- **TTY** (Terminal type)— Shows the terminal associated with the process (e.g., pts/0). If it says ?, the process isn’t connected to a terminal (often system/background processes).
+- **TIME** (CPU time used)— The total amount of CPU processing time the process has consumed since it started, shown as minutes:seconds (e.g., 00:01).
+- **CMD** (Command that started the process)— The command or program name that started the process. For example, bash, sshd, or nginx.
 
 ### **Filtering Specific Processes**
 To find details of a specific process (e.g., `nginx`):
