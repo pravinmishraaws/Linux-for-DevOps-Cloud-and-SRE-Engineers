@@ -18,9 +18,12 @@ AWS EC2 (Elastic Compute Cloud) allows users to rent virtual machines (VMs) in t
 3. **Launch a New Instance**:
    - Click **Launch Instance**.
    - Provide a **name** for your instance.
-   - Choose an **Amazon Machine Image (AMI)** – We will use **Amazon Linux 2**.
-   - Select **Instance Type** – Choose `t2.micro` (free-tier eligible, 1GB RAM).
+   - Choose an **Amazon Machine Image (AMI)** – Select **Amazon Linux 2023 (kernel 6.12)** for the latest features and security updates.
+   - Select **Instance Type** – Choose `t2.micro or t3.micro` (free-tier eligible, 1GB RAM).
    - Choose an **existing key pair** (or create a new one for secure access).
+   - Configure Security Group
+     - Allow SSH (port 22) from your IP for remote access.
+     - Allow HTTP (port 80) from anywhere for web traffic.
    - Keep other settings default and **launch the instance**.
 4. **Monitor the Instance**:
    - Go to the **Instances list**.
