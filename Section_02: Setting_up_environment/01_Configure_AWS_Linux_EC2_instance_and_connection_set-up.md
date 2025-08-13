@@ -24,6 +24,8 @@ AWS EC2 (Elastic Compute Cloud) allows users to rent virtual machines (VMs) in t
    - Configure Security Group
      - Allow SSH (port 22) from your IP for remote access.
      - Allow HTTP (port 80) from anywhere for web traffic.
+       <img width="948" height="632" alt="Screenshot 2025-08-13 at 05 13 03" src="https://github.com/user-attachments/assets/6f0a15df-1244-472f-a143-8c68abc34409" />
+
    - Keep other settings default and **launch the instance**.
 4. **Monitor the Instance**:
    - Go to the **Instances list**.
