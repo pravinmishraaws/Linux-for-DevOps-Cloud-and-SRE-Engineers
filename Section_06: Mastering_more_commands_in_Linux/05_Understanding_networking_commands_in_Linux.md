@@ -60,6 +60,20 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> mtu 9001
 lo: flags=73<UP,LOOPBACK,RUNNING> mtu 65536
     inet 127.0.0.1  netmask 255.0.0.0
 ```
+
+**New Names (ens5): Why the name changed**
+The old names (eth0, eth1) were assigned in the order devices were detected, which could change between boots.
+To make names persistent and predictable, systemd’s Predictable Network Interface Names policy was introduced.
+
+Now names are based on:
+- The physical slot on the motherboard (PCI location)
+- The device’s MAC address
+- Or the firmware-provided index
+
+So you get names like:
+- ens5 → Ethernet, slot 5
+- enp0s3 → Ethernet, bus 0, slot 3
+
 ---
 
 ## **2. Checking Network Connectivity with `ping`**
