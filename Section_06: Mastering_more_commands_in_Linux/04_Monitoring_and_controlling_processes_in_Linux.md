@@ -60,7 +60,7 @@ Here:
 | **VSZ** | Virtual memory used (KB) |
 | **RSS** | Resident memory (KB) |
 | **TTY** | Terminal associated with the process |
-| **STAT** | Process state (`R`=Running, `S`=Sleeping, `Z`=Zombie) |
+| **STAT** | Process state (`R`=Running, `S`=Sleeping (interruptible), `D`=Sleeping (uninterruptible), `Z`=Zombie, `T`=Stopped (job control), `I`=Idle kernel thread) |
 | **START** | Time the process started |
 | **TIME** | Total CPU time used |
 | **CMD** | Command used to start the process |
