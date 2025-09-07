@@ -5,7 +5,6 @@ You’ve already deployed a static HTML site on **Amazon Linux**.
 Now, it’s time to deploy:
 
 - A **[real React app](https://github.com/pravinmishraaws/my-react-app) _(opens in new tab)_** using **Ubuntu**
-- A **<a href="https://github.com/pravinmishraaws/my-react-app" target="_blank">real React app</a>** using **Ubuntu**
 - And serve it with **Nginx** from your VM's public IP
 
 ---
