@@ -124,7 +124,7 @@ curl ifconfig.me
 ```
 
 Open the app in your browser:
-👉 [http://<your-public-ip>](http://<your-public-ip>)
+👉 [http://your-public-ip](http://<your-public-ip>)
 
 ---
 
