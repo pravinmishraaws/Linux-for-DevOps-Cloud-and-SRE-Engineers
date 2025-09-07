@@ -1,4 +1,4 @@
-# Assignment: Linux Administration Practice – Networking, Process Monitoring & System Info
+# Assignment 4: Linux Administration Practice
 
 ## Objective
 Your **[React app](https://github.com/pravinmishraaws/my-react-app)** is already deployed on an **Ubuntu VM with Nginx**.  
