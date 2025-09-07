@@ -59,6 +59,6 @@ If you already have an AWS Free Tier account, you can **skip Tasks 1 and 2** and
 
 Please follow the submission guidelines explained during the live session.  
 
-DevOps Micro Internship [Assignment Master Sheets](https://docs.google.com/spreadsheets/d/1HnlenHEjytvLJMy84bBF-5B1RABaY_BjbfwCj-qnvHM/edit)
+DevOps Micro Internship [Assignment Master Sheets](https://docs.google.com/spreadsheets/d/1HnlenHEjytvLJMy84bBF-5B1RABaY_BjbfwCj-qnvHM/edit?gid=0#gid=0)
 
 
